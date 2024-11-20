@@ -65,34 +65,40 @@ class CalanderController extends GetxController {
   //   }
   // }
 
-  void addTag(
-      int year, int month, int day, String title, String content) async {
+  ///
+  ///  @24-11-20 Junhyeong Update Note: 무지성으로 날짜 url 호출 시 Tag 검색에 중복으로 쌓이는 문제점 발생
+  ///  _--> 검색 시에는 sid와 urlMode를 삽입해서 검색할 것.
+  void addTag(int year, int month, int day, String title, String content,
+      {int sid = 0, bool urlMode = true}) async {
     DateTime dateTime = DateTime(year, month, day);
     String stringTime = dateTime.toIso8601String();
-    final url = Uri.http(SERVER_DOMAIN, "/calenders");
-    final response = await ssuPost(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': tokenController.accessToken.toString(),
-      },
-      body: jsonEncode(
-        {
-          "dateInfo": {"year": year, "month": month, "day": day},
-          "title": title,
-          "content": content,
-          "startDay": stringTime,
-          "endDay": stringTime
-        },
-      ),
-    );
-    if (response.statusCode != 200) return;
 
-    final responseData = ApiHelper(response.body);
-    print(responseData.responseData);
-    final resultCode = responseData.getResultCode();
-    if (resultCode != 200) return;
-    final sid = responseData.getBody();
+    if (urlMode) {
+      final url = Uri.http(SERVER_DOMAIN, "/calenders");
+      final response = await ssuPost(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': tokenController.accessToken.toString(),
+        },
+        body: jsonEncode(
+          {
+            "dateInfo": {"year": year, "month": month, "day": day},
+            "title": title,
+            "content": content,
+            "startDay": stringTime,
+            "endDay": stringTime
+          },
+        ),
+      );
+      if (response.statusCode != 200) return;
+
+      final responseData = ApiHelper(response.body);
+      print(responseData.responseData);
+      final resultCode = responseData.getResultCode();
+      if (resultCode != 200) return;
+      sid = responseData.getBody();
+    }
 
     String key = '$year-$month-$day';
     print(key);
@@ -115,7 +121,7 @@ class CalanderController extends GetxController {
   //Tag삭제함수
   void removeTag(int year, int month, int day, int sid) async {
     final url = Uri.http(SERVER_DOMAIN, "/calenders/$sid");
-    final response = await http.delete(
+    final response = await ssuDelete(
       url,
       headers: {
         'Content-Type': 'application/json',
@@ -162,7 +168,10 @@ class CalanderController extends GetxController {
       ),
     );
     print(1);
-    final response = await request.send();
+
+    //해당 부분 ssuSend(request) 로 변경
+    //final response = await request.send();
+    final response = await ssuSend(request);
     print(2);
 
     if (response.statusCode != 200) return;
@@ -197,14 +206,14 @@ class CalanderController extends GetxController {
     }
   }
 
-  //Calander 에 3개만 보여줄 Tag 리스트
+  //Calander 에 2개만 보여줄 Tag 리스트
   List<Container> retTagShortList(int day, double width, double height) {
     List<Container> li = [];
     String key = '$year-$month-$day';
     if (tagMap.containsKey(key)) {
       List<TagNode>? tagList = tagMap[key];
       if (tagList != null) {
-        for (int i = 0; i < tagMap[key]!.length && i < 3; i++) {
+        for (int i = 0; i < tagMap[key]!.length && i < 2; i++) {
           int tagInfo = tagList[i].tag;
           switch (tagInfo) {
             case 1:
@@ -288,7 +297,8 @@ class CalanderController extends GetxController {
   // 향후, 캘린더 조회 API 완성 시 구현 마무리.
   void fetchData() async {
     final url = Uri.http(SERVER_DOMAIN, "/calanders");
-    final response = await http.get(
+    //http.get() --> ssuGet
+    final response = await ssuGet(
       url,
       headers: {
         'Content-Type': 'application/json',
@@ -306,15 +316,23 @@ class CalanderController extends GetxController {
 
   // 캘린더 데이터 fetch 함수.
   // 년, 월을 기준으로 불러옴.
+  ///
+  ///  @24-11-20 Junhyeong Update Note: 해당 부분 addTag 부분 많이 수정함
+  ///  _--> 검색 시에는 sid와 urlMode를 false로 바꿔서 검색할 것. 아니면 날짜 중복으로 생성됨.
+  /// http.get() 대신 ssuGet() 으로 바꿔서 쓸 것. (reissue 자동화 Wrapping 구현 완료)
   void fetchDataByDate(int year, int month) async {
     // 쿼리 파라미터 추가
+
+    final Uri url = Uri.http(SERVER_DOMAIN, "/calenders/$year/$month");
+    /*
     final Uri url =
         Uri.parse("http://$SERVER_DOMAIN/calenders").replace(queryParameters: {
       'year': year.toString(),
       'month': month.toString(),
     });
+    */
 
-    final response = await http.get(url, headers: {
+    final response = await ssuGet(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': tokenController.accessToken.toString(),
     });
@@ -325,6 +343,8 @@ class CalanderController extends GetxController {
     if (resultCode != 200) return;
 
     final tagNodes = responseData.getBody();
+    print(tagNodes);
+    /*
     List<TagNode> list = List<TagNode>.from(
         (tagNodes as List).map((item) => TagNode.fromJson(item)));
 
@@ -336,7 +356,21 @@ class CalanderController extends GetxController {
       final title = tagNode.title;
       final content = tagNode.content;
 
+      print(day);
       addTag(year, month, day, title, content);
+    }
+    */
+    tagMap.clear();
+    for (final tagNode in tagNodes) {
+      final year = tagNode['dateInfo']['year'];
+      final month = tagNode['dateInfo']['month'];
+      final day = tagNode['dateInfo']['day'];
+      final title = tagNode['title'];
+      final content = tagNode['content'];
+      final sid = tagNode["calenderId"];
+
+      print(day);
+      addTag(year, month, day, title, content, sid: sid, urlMode: false);
     }
     print("조회 성공");
   }
