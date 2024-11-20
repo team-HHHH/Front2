@@ -28,7 +28,7 @@ class CalanderScreen extends StatefulWidget {
 class _CalanderScreenState extends State<CalanderScreen> {
   final List<String> weekdays = ["일", "월", "화", "수", "목", "금", "토"];
   final calanderCont = Get.put(CalanderController());
-  int _selectedDay = 2;
+  int _selectedDay = 0;
   List<TagNode> selectedTags = [];
 
   List<List<int>> viewDays = [
@@ -259,8 +259,20 @@ class _CalanderScreenState extends State<CalanderScreen> {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 0, 0, 0),
+                      child: Text(
+                        _selectedDay != 0
+                            ? "${calanderCont.year}년 ${calanderCont.month}월 $_selectedDay일"
+                            : "",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: IconButton(
