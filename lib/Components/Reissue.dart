@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:scheduler/Components/ApiHelper.dart';
 import 'package:scheduler/ConfigJH.dart';
+import 'package:scheduler/Controllers/logout_controller.dart';
 import 'package:scheduler/Controllers/token_controller.dart';
 
 Future<http.Response> ssuPost(
@@ -12,6 +13,7 @@ Future<http.Response> ssuPost(
   Encoding? encoding,
 }) async {
   final TokenController tokenController = Get.put(TokenController());
+  final LogoutController logoutController = Get.put(LogoutController());
   http.Response response = await http.post(url, headers: headers, body: body);
 
   ApiHelper apiHelper = ApiHelper(response.body);
@@ -34,9 +36,10 @@ Future<http.Response> ssuPost(
     if (headers != null && headers.containsKey("authorization")) {
       headers['authorization'] = tokenController.accessToken.toString();
     }
-
     // 재요청
     response = await http.post(url, headers: headers, body: body);
+  } else if (return_code == 403) {
+    logoutController.logout();
   }
 
   return response;
@@ -49,6 +52,7 @@ Future<http.Response> ssuDelete(
   Encoding? encoding,
 }) async {
   final TokenController tokenController = Get.put(TokenController());
+  final LogoutController logoutController = Get.put(LogoutController());
   http.Response response = await http.delete(url, headers: headers, body: body);
 
   ApiHelper apiHelper = ApiHelper(response.body);
@@ -71,9 +75,10 @@ Future<http.Response> ssuDelete(
     if (headers != null && headers.containsKey("authorization")) {
       headers['authorization'] = tokenController.accessToken.toString();
     }
-
     // 재요청
     response = await http.delete(url, headers: headers, body: body);
+  } else if (return_code == 403) {
+    logoutController.logout();
   }
 
   return response;
@@ -81,6 +86,7 @@ Future<http.Response> ssuDelete(
 
 Future<http.Response> ssuGet(Uri url, {Map<String, String>? headers}) async {
   final TokenController tokenController = Get.put(TokenController());
+  final LogoutController logoutController = Get.put(LogoutController());
   http.Response response = await http.get(url, headers: headers);
 
   ApiHelper apiHelper = ApiHelper(response.body);
@@ -102,10 +108,10 @@ Future<http.Response> ssuGet(Uri url, {Map<String, String>? headers}) async {
     }
     if (headers != null && headers.containsKey("authorization")) {
       headers['authorization'] = tokenController.accessToken.toString();
-    }
-
-    // 재요청
+    } // 재요청
     response = await http.get(url, headers: headers);
+  } else if (return_code == 403) {
+    logoutController.logout();
   }
 
   return response;
@@ -113,8 +119,8 @@ Future<http.Response> ssuGet(Uri url, {Map<String, String>? headers}) async {
 
 Future<http.StreamedResponse> ssuSend(http.MultipartRequest requests) async {
   //final response = await requests.send();
-
   final TokenController tokenController = Get.put(TokenController());
+  final LogoutController logoutController = Get.put(LogoutController());
   http.StreamedResponse response = await requests.send();
   String responseBody = await response.stream.bytesToString();
 
@@ -142,9 +148,11 @@ Future<http.StreamedResponse> ssuSend(http.MultipartRequest requests) async {
       requests.headers['authorization'] =
           tokenController.accessToken.toString();
     }
-
     // 재요청
     response = await requests.send();
+  } else if (return_code == 403) {
+    logoutController.logout();
   }
+
   return response;
 }
