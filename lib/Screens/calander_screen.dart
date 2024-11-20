@@ -28,7 +28,7 @@ class CalanderScreen extends StatefulWidget {
 class _CalanderScreenState extends State<CalanderScreen> {
   final List<String> weekdays = ["일", "월", "화", "수", "목", "금", "토"];
   final calanderCont = Get.put(CalanderController());
-  int _selectedDay = 0;
+  int _selectedDay = 2;
   List<TagNode> selectedTags = [];
 
   List<List<int>> viewDays = [
@@ -160,7 +160,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
                         width: itemWidth,
                         height: WeekHeight,
                         decoration: BoxDecoration(
-                          border: Border.all(color: BORDER_GRAY, width: 1),
+                          border: Border.all(color: BORDER_GRAY, width: 0.2),
                           borderRadius: index == 0
                               ? const BorderRadius.only(
                                   topLeft: Radius.circular(10),
@@ -181,7 +181,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
                                     : index == 6
                                         ? SSU_BLUE
                                         : CALANDER_TEXT_GRAY,
-                                fontSize: 16,
+                                fontSize: 10,
                                 fontWeight: FontWeight.bold), // 텍스트 스타일 정의
                           ),
                         ),
@@ -208,7 +208,8 @@ class _CalanderScreenState extends State<CalanderScreen> {
                             width: itemWidth,
                             height: dayHeight,
                             decoration: BoxDecoration(
-                              border: Border.all(color: BORDER_GRAY, width: 1),
+                              border:
+                                  Border.all(color: BORDER_GRAY, width: 0.2),
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,

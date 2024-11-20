@@ -10,6 +10,9 @@ import 'package:get/get.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_story.dart';
 import 'package:scheduler/ConfigJH.dart';
 import 'package:scheduler/Controllers/token_controller.dart';
+import 'package:scheduler/Screens/calander_add_screen.dart';
+import 'package:scheduler/Screens/calander_screen.dart';
+import 'package:scheduler/Screens/camera_screen.dart';
 import 'package:scheduler/Screens/login_screen.dart';
 import 'package:scheduler/Screens/profile_screen.dart';
 import 'package:scheduler/Screens/register_detail_screen.dart';
@@ -76,7 +79,7 @@ class LoginController extends GetxController {
 
     //// Debugging
 
-    Get.to(const ProfileScreen());
+    Get.to(const CalanderScreen());
   }
 
   void handleRegister() {

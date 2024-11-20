@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:scheduler/Components/ApiHelper.dart';
+import 'package:scheduler/Components/Reissue.dart';
 import 'package:scheduler/Components/calanderTags.dart';
 import 'package:scheduler/ConfigJH.dart';
 import 'package:http/http.dart' as http;
@@ -69,11 +70,11 @@ class CalanderController extends GetxController {
     DateTime dateTime = DateTime(year, month, day);
     String stringTime = dateTime.toIso8601String();
     final url = Uri.http(SERVER_DOMAIN, "/calenders");
-    final response = await http.post(
+    final response = await ssuPost(
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': ACCESS_TOKEN,
+        'Authorization': tokenController.accessToken.toString(),
       },
       body: jsonEncode(
         {
@@ -150,7 +151,7 @@ class CalanderController extends GetxController {
 
     request.headers.addAll({
       'Content-Type': 'application/json',
-      'Authorization': ACCESS_TOKEN,
+      'Authorization': tokenController.accessToken.toString()
     });
     request.files.add(
       http.MultipartFile.fromBytes(
@@ -291,7 +292,7 @@ class CalanderController extends GetxController {
       url,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': ACCESS_TOKEN,
+        'Authorization': tokenController.accessToken.toString()
       },
     );
     if (response.statusCode != 200) return;
@@ -315,7 +316,7 @@ class CalanderController extends GetxController {
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
-      'Authorization': ACCESS_TOKEN,
+      'Authorization': tokenController.accessToken.toString(),
     });
     if (response.statusCode != 200) return;
 
