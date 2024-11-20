@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kakao Map</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services"></script>
+    <style>
+        body, html { width: 100%; height: 100%; margin: 0; padding: 0; }
+        #map { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        var mapContainer = document.getElementById('map'); 
+        var mapOption = { 
+            center: new kakao.maps.LatLng(37.5665, 126.978), // 기본 좌표
+            level: 3 
+        };
+        var map = new kakao.maps.Map(mapContainer, mapOption);
+
+        // 지도 클릭 이벤트
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+            var lat = mouseEvent.latLng.getLat(); // 클릭한 위도
+            var lng = mouseEvent.latLng.getLng(); // 클릭한 경도
+            // Flutter로 메시지 전송
+            MapChannel.postMessage(lat + ',' + lng);
+        });
+    </script>
+</body>
+</html>
