@@ -38,22 +38,8 @@ class TokenController extends GetxController {
     _storage.remove('refresh_token'); // refresh token 삭제
   }
 
-  Future<void> reissue() async {
-    final url = Uri.http(SERVER_DOMAIN, "users/reissue");
-    final response = await http.post(url, headers: {
-      'Content-Type': 'application/json',
-      "Authorization": accessToken.toString(),
-      "Refresh": "Bearer " + refreshToken.toString()
-    });
-
-    if (response.statusCode != 200) return;
-
-    final responseData = ApiHelper(response.body);
-    final resultCode = responseData.getResultCode();
-    final resultMessage = responseData.getResultMessage();
-    print(resultMessage);
-    if (resultCode != 200) return;
-
-    this.setAccessToken(response.headers["Authorization"].toString());
+  void reToken() {
+    accessToken.value = _storage.read('access_token') ?? '';
+    refreshToken.value = _storage.read('refresh_token') ?? '';
   }
 }

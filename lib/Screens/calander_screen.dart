@@ -273,22 +273,20 @@ class _CalanderScreenState extends State<CalanderScreen> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: IconButton(
-                        onPressed: () {
-                          Get.bottomSheet(
-                            SizedBox(
-                                height: 350,
-                                child: CalanderAddScreen(day: _selectedDay)),
-                            enableDrag: true,
-                            isDismissible: true,
-                          );
-                        },
-                        iconSize: 30,
-                        icon: const Icon(Icons.add, color: SSU_BLUE),
-                      ),
-                    ),
+                    _selectedDay == 0
+                        ? const SizedBox()
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: IconButton(
+                              onPressed: () {
+                                Get.to(
+                                  CalanderAddScreen(day: _selectedDay),
+                                );
+                              },
+                              iconSize: 30,
+                              icon: const Icon(Icons.add, color: SSU_BLUE),
+                            ),
+                          ),
                   ],
                 ),
                 Expanded(
@@ -311,28 +309,50 @@ class _CalanderScreenState extends State<CalanderScreen> {
                         } else {
                           color = Colors.red;
                         }
-                        return ListTile(
-                          leading: Icon(
-                            Icons.event,
-                            color: color,
-                          ),
-                          title: Text(tag.title),
-                          subtitle: Text(tag.content),
-                          onTap: () {
-                            Get.bottomSheet(
-                              SizedBox(
-                                height: 350,
-                                child: CalanderDetailScreen(tagNode: tag),
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5), // 리스트 아이템 간의 간격
+                          decoration: BoxDecoration(
+                            color: Colors.white, // 배경색
+                            borderRadius: BorderRadius.circular(10), // 모서리 둥글기
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1), // 그림자 색상
+                                offset: const Offset(0, 2), // 그림자의 위치
+                                blurRadius: 1, // 그림자 확산 정도
                               ),
-                              isDismissible: true,
-                              enableDrag: true,
-                            );
-                          },
+                            ],
+                          ),
+                          child: ListTile(
+                            // ListTile의 패딩
+                            leading: Icon(
+                              size: 18,
+                              Icons.event,
+                              color: color,
+                            ),
+                            title: Text(
+                              tag.title,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            subtitle: Text(
+                              tag.content,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            onTap: () {
+                              Get.to(CalanderDetailScreen(tagNode: tag));
+                            },
+                          ),
                         );
                       },
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),

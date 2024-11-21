@@ -5,6 +5,7 @@ import 'package:scheduler/Components/Alert.dart';
 import 'package:scheduler/Components/ApiHelper.dart';
 
 import 'package:get/get.dart';
+import 'package:scheduler/Components/Reissue.dart';
 import 'package:scheduler/ConfigJH.dart';
 import 'package:scheduler/Controllers/token_controller.dart';
 import 'package:scheduler/Controllers/userInfo_controller.dart';
@@ -67,7 +68,7 @@ class UserChangeController extends GetxController {
   Future<bool> nickname_checker() async {
     final url = Uri.http(SERVER_DOMAIN, "users/check/nickname");
 
-    final response = await http.post(url,
+    final response = await ssuPost(url,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -89,7 +90,7 @@ class UserChangeController extends GetxController {
 
   Future<int> email_sender() async {
     final url = Uri.http(SERVER_DOMAIN, "users/check/email");
-    final response = await http.post(url,
+    final response = await ssuPost(url,
         headers: {
           'Content-Type': 'application/json',
           "Authorization": tokenController.accessToken.toString(),
@@ -114,7 +115,7 @@ class UserChangeController extends GetxController {
     code = code.trim();
 
     final url = Uri.http(SERVER_DOMAIN, "users/check/emailcode");
-    final response = await http.post(url,
+    final response = await ssuPost(url,
         headers: {
           'Content-Type': 'application/json',
           "Authorization": tokenController.accessToken.toString(),
@@ -144,9 +145,8 @@ class UserChangeController extends GetxController {
     print(tokenController.accessToken);
 
     final url = Uri.http(SERVER_DOMAIN, "users");
-    print(
-        "[변경] nickname:" + nickname + ", email:" + email + ", addr:" + address);
-    final response = await http.patch(url,
+    print("[변경] nickname:$nickname, email:$email, addr:$address");
+    final response = await ssuPatch(url,
         headers: {
           'Content-Type': 'application/json',
           "Authorization": tokenController.accessToken.toString(),
@@ -172,7 +172,7 @@ class UserChangeController extends GetxController {
     profileImg = responseData.getBodyValueOne("profileImg").toString();
     */
 
-    print(nickname + " : " + address + ", id=" + loginId);
+    print("$nickname : $address, id=$loginId");
     showAlertDialog(context, "수정 완료", const ProfileScreen());
   }
 
@@ -186,9 +186,9 @@ class UserChangeController extends GetxController {
     final url =
         Uri.parse(baseUrl.toString()).replace(queryParameters: queryParams);
 
-    print("[변경] originPW:" + originPw + ", newPW:" + newPw);
+    print("[변경] originPW:$originPw, newPW:$newPw");
 
-    final response = await http.patch(url,
+    final response = await ssuPatch(url,
         headers: {
           'Content-Type': 'application/json',
           "Authorization": tokenController.accessToken.toString(),
@@ -210,7 +210,7 @@ class UserChangeController extends GetxController {
     profileImg = responseData.getBodyValueOne("profileImg").toString();
     */
 
-    print(nickname + " : " + address + ", id=" + loginId);
+    print("$nickname : $address, id=$loginId");
     showAlertDialog(context, "비밀번호 변경 완료", LoginScreen());
   }
 
