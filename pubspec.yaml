@@ -36,6 +36,7 @@ flutter:
   assets:
     - assets/images/Search.png
     - assets/images/DefaultProfile.png
+    - assets/images/4.jpg
     - assets/images/google_login.png
     - assets/images/kakao_login.png
     - lib/assets/kakao_map.html

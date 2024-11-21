@@ -60,7 +60,7 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
             CupertinoDialogAction(
               onPressed: () {
-                calanderController.summarizePoster(imageData!);
+                calanderController.summarizePoster(imageData!, context);
                 Navigator.of(context).pop();
               },
               child: const Text(

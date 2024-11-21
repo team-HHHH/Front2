@@ -117,11 +117,12 @@ Future<http.Response> ssuGet(Uri url, {Map<String, String>? headers}) async {
   return response;
 }
 
-Future<http.StreamedResponse> ssuSend(http.MultipartRequest requests) async {
+Future<String> ssuSend(http.MultipartRequest requests) async {
   //final response = await requests.send();
   final TokenController tokenController = Get.put(TokenController());
   final LogoutController logoutController = Get.put(LogoutController());
   http.StreamedResponse response = await requests.send();
+  if (response.statusCode != 200) return "";
   String responseBody = await response.stream.bytesToString();
 
   ApiHelper apiHelper = ApiHelper(responseBody);
@@ -150,9 +151,11 @@ Future<http.StreamedResponse> ssuSend(http.MultipartRequest requests) async {
     }
     // 재요청
     response = await requests.send();
+    if (response.statusCode != 200) return "";
+    responseBody = await response.stream.bytesToString();
   } else if (return_code == 403) {
     logoutController.logout();
   }
 
-  return response;
+  return responseBody;
 }

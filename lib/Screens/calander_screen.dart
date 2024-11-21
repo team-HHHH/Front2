@@ -84,8 +84,11 @@ class _CalanderScreenState extends State<CalanderScreen> {
             IconButton(
               onPressed: () {
                 print("카메라 버튼 터치!");
+                calanderCont.summerizePosterUrgen(context);
+                /*
                 Get.to(() => const CameraScreen(),
                     transition: Transition.cupertino);
+                */
               },
               icon: const Icon(
                 Icons.camera_alt_outlined,

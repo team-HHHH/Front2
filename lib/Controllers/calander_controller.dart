@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:scheduler/Components/Alert.dart';
 import 'package:scheduler/Components/ApiHelper.dart';
 import 'package:scheduler/Components/Reissue.dart';
 import 'package:scheduler/Components/calanderTags.dart';
@@ -12,6 +16,8 @@ import 'package:scheduler/ConfigJH.dart';
 import 'package:http/http.dart' as http;
 import 'package:scheduler/Controllers/token_controller.dart';
 import 'package:scheduler/Models/tag.dart';
+import 'package:scheduler/Screens/calander_add_screen.dart';
+import 'package:scheduler/Screens/calander_screen.dart';
 
 class CalanderController extends GetxController {
   final TokenController tokenController = Get.put(TokenController());
@@ -151,7 +157,7 @@ class CalanderController extends GetxController {
   //   String key = '$year-$month-$day';
   // }
 
-  void summarizePoster(Uint8List poster) async {
+  void summerizePosterUrgen(BuildContext context) async {
     final url = Uri.http(SERVER_DOMAIN, "/posters/upload");
     final request = http.MultipartRequest('POST', url);
 
@@ -159,37 +165,132 @@ class CalanderController extends GetxController {
       'Content-Type': 'application/json',
       'Authorization': tokenController.accessToken.toString()
     });
+
+    //debug *****************************
+    final ByteData tmpData = await rootBundle.load("assets/images/4.jpg");
+    Uint8List poster = tmpData.buffer.asUint8List();
+
+    //debug *****************************
+
     request.files.add(
       http.MultipartFile.fromBytes(
         'file',
         poster,
-        filename: 'image.png',
-        contentType: MediaType('image', 'png'),
+        filename: 'image.jpg',
+        contentType: MediaType('image', 'jpg'),
       ),
     );
-    print(1);
 
     //해당 부분 ssuSend(request) 로 변경
     //final response = await request.send();
-    final response = await ssuSend(request);
-    print(2);
+    const String msg = "요청이 전송되었습니다. 요청 완료까지 60초정도 소요될 수 있습니다. 끝나면 알림을 보내드립니다";
+
+    /*
+    // Loading Dialog 표시
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const Text("요청이 전송되었습니다. 요청 완료까지 60초 정도 소요될 수 있습니다."),
+        );
+      },
+    );
+
+    Navigator.pop(context);
+    */
+    // 비동기 작업
+    final responseBody = await ssuSend(request); //Error시 ""
+    if (responseBody == "") return;
+
+    //showAlertDialog(context, msg, const CalanderScreen());
+    /*
 
     if (response.statusCode != 200) return;
-    print(3);
 
     final responseBody = await response.stream.bytesToString();
-    print(4);
+    */
+
+    final responseData = ApiHelper(responseBody);
+
+    final resultCode = responseData.getResultCode();
+    if (resultCode != 200) return;
+
+    final title = responseData.getBodyValueOne("title").toString();
+    final content = responseData.getBodyValueOne("content").toString();
+    final startDay = responseData.getBodyValueOne('startDay').toString();
+    final endDay = responseData.getBodyValueOne('endDay').toString();
+    //showAlertDialog(context, "요약이 완료되었습니다!", const CalanderAddScreen(day: 5));
+
+    print(title);
+    print(content);
+    print(startDay);
+    print(endDay);
+  }
+
+  void summarizePoster(Uint8List poster, BuildContext context) async {
+    final url = Uri.http(SERVER_DOMAIN, "/posters/upload");
+    final request = http.MultipartRequest('POST', url);
+
+    request.headers.addAll({
+      'Content-Type': 'application/json',
+      'Authorization': tokenController.accessToken.toString()
+    });
+
+    //debug *****************************
+    final ByteData tmpData = await rootBundle.load("assets/images/4.jpg");
+    poster = tmpData.buffer.asUint8List();
+
+    //debug *****************************
+
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        poster,
+        filename: 'image.jpg',
+        contentType: MediaType('image', 'jpg'),
+      ),
+    );
+
+    //해당 부분 ssuSend(request) 로 변경
+    //final response = await request.send();
+    const String msg = "요청이 전송되었습니다. 요청 완료까지 60초정도 소요될 수 있습니다. 끝나면 알림을 보내드립니다";
+
+    /*
+    // Loading Dialog 표시
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: const Text("요청이 전송되었습니다. 요청 완료까지 60초 정도 소요될 수 있습니다."),
+        );
+      },
+    );
+
+    Navigator.pop(context);
+    */
+    // 비동기 작업
+    final responseBody = await ssuSend(request);
+    if (responseBody == "") return;
+    //showAlertDialog(context, msg, const CalanderScreen());
+    /*
+
+    if (response.statusCode != 200) return;
+
+    final responseBody = await response.stream.bytesToString();
+    */
+
     final responseData = ApiHelper(responseBody);
 
     final resultCode = responseData.getResultCode();
     print(resultCode);
     if (resultCode != 200) return;
-    print(6);
+
     final title = responseData.getBodyValue("title").toString();
     final content = responseData.getBodyValue("content").toString();
     final startDay = responseData.getBodyValue('startDay').toString();
     final endDay = responseData.getBodyValue('endDay').toString();
-    print(7);
+    //showAlertDialog(context, "요약이 완료되었습니다!", const CalanderAddScreen(day: 5));
+
     print(title);
     print(content);
     print(startDay);
