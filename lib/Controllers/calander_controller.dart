@@ -70,6 +70,49 @@ class CalanderController extends GetxController {
   //     tagMap[key] = [adder];
   //   }
   // }
+  void updateTag(TagNode myTag, String title, String content) async {
+    TagNode newTag = TagNode(
+        title: title != "" ? title : myTag.title,
+        content: content != "" ? content : myTag.content,
+        timeDetail: myTag.timeDetail,
+        sid: myTag.sid,
+        tag: myTag.tag);
+
+    print(newTag.title + ": " + newTag.content + "[sid=${newTag.sid}]");
+
+    DateTime dateTime = DateTime(
+        newTag.timeDetail.year, newTag.timeDetail.month, newTag.timeDetail.day);
+    String stringTime = dateTime.toIso8601String();
+    final url = Uri.http(SERVER_DOMAIN, "/calenders/${newTag.sid}");
+    final response = await ssuPatch(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': tokenController.accessToken.toString(),
+      },
+      body: jsonEncode(
+        {
+          "dateInfo": {
+            "year": newTag.timeDetail.year,
+            "month": newTag.timeDetail.month,
+            "day": newTag.timeDetail.day
+          },
+          "title": newTag.title,
+          "content": newTag.content,
+          "startDay": stringTime,
+          "endDay": stringTime
+        },
+      ),
+    );
+    if (response.statusCode != 200) return;
+
+    final responseData = ApiHelper(response.body);
+    print(responseData.responseData);
+    final resultCode = responseData.getResultCode();
+    if (resultCode != 200) return;
+
+    fetchDataByDate(newTag.timeDetail.year, newTag.timeDetail.month);
+  }
 
   ///
   ///  @24-11-20 Junhyeong Update Note: 무지성으로 날짜 url 호출 시 Tag 검색에 중복으로 쌓이는 문제점 발생
@@ -100,7 +143,6 @@ class CalanderController extends GetxController {
       if (response.statusCode != 200) return;
 
       final responseData = ApiHelper(response.body);
-      print(responseData.responseData);
       final resultCode = responseData.getResultCode();
       if (resultCode != 200) return;
       sid = responseData.getBody();
@@ -167,7 +209,7 @@ class CalanderController extends GetxController {
     });
 
     //debug *****************************
-    final ByteData tmpData = await rootBundle.load("assets/images/4.jpg");
+    final ByteData tmpData = await rootBundle.load("assets/images/4.png");
     Uint8List poster = tmpData.buffer.asUint8List();
 
     //debug *****************************
@@ -176,8 +218,8 @@ class CalanderController extends GetxController {
       http.MultipartFile.fromBytes(
         'file',
         poster,
-        filename: 'image.jpg',
-        contentType: MediaType('image', 'jpg'),
+        filename: 'image.png',
+        contentType: MediaType('image', 'png'),
       ),
     );
 
@@ -418,7 +460,7 @@ class CalanderController extends GetxController {
   // 캘린더 데이터 fetch 함수.
   // 년, 월을 기준으로 불러옴.
   ///
-  ///  @24-11-20 Junhyeong Update Note: 해당 부분 addTag 부분 많이 수정함
+  ///  @24-11-20 Junhyeong Update Note: 해당 부분 addTag 부분 많이 수정함 git push (11-21)
   ///  _--> 검색 시에는 sid와 urlMode를 false로 바꿔서 검색할 것. 아니면 날짜 중복으로 생성됨.
   /// http.get() 대신 ssuGet() 으로 바꿔서 쓸 것. (reissue 자동화 Wrapping 구현 완료)
   void fetchDataByDate(int year, int month) async {
@@ -444,7 +486,6 @@ class CalanderController extends GetxController {
     if (resultCode != 200) return;
 
     final tagNodes = responseData.getBody();
-    print(tagNodes);
     /*
     List<TagNode> list = List<TagNode>.from(
         (tagNodes as List).map((item) => TagNode.fromJson(item)));
@@ -470,7 +511,6 @@ class CalanderController extends GetxController {
       final content = tagNode['content'];
       final sid = tagNode["calenderId"];
 
-      print(day);
       addTag(year, month, day, title, content, sid: sid, urlMode: false);
     }
     print("조회 성공");

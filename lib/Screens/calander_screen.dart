@@ -301,7 +301,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
                       itemCount: selectedTags
                           .length, // 리스트 아이템 수. 실제 데이터 개수에 맞춰 설정하세요.
                       itemBuilder: (context, index) {
-                        final tag = selectedTags[index];
+                        var tag = selectedTags[index];
                         Color color;
                         if (tag.tag == 1) {
                           color = Colors.blue;
@@ -322,6 +322,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
                           title: Text(tag.title),
                           subtitle: Text(tag.content),
                           onTap: () {
+                            //tag.title =
                             Get.bottomSheet(
                               SizedBox(
                                 height: 350,

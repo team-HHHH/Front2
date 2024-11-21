@@ -45,6 +45,43 @@ Future<http.Response> ssuPost(
   return response;
 }
 
+Future<http.Response> ssuPatch(Uri url,
+    {Map<String, String>? headers, Object? body, Encoding? encoding}) async {
+  final TokenController tokenController = Get.put(TokenController());
+  final LogoutController logoutController = Get.put(LogoutController());
+  http.Response response =
+      await http.patch(url, headers: headers, body: body, encoding: encoding);
+
+  ApiHelper apiHelper = ApiHelper(response.body);
+  final return_code = apiHelper.getResultCode();
+  if (return_code == 401) {
+    print(tokenController.refreshToken.toString());
+    final reissueResponse = await http.post(
+        Uri.http(SERVER_DOMAIN, "users/reissue"),
+        headers: {"refresh": tokenController.refreshToken.toString()});
+
+    final accessToken = reissueResponse.headers["authorization"];
+    final refreshToken = reissueResponse.headers["refresh"];
+
+    tokenController.setAccessToken(accessToken.toString());
+    tokenController.setRefreshToken(refreshToken.toString());
+
+    if (headers != null && headers.containsKey("Authorization")) {
+      headers['Authorization'] = tokenController.accessToken.toString();
+    }
+    if (headers != null && headers.containsKey("authorization")) {
+      headers['authorization'] = tokenController.accessToken.toString();
+    }
+    // 재요청
+    response =
+        await http.patch(url, headers: headers, body: body, encoding: encoding);
+  } else if (return_code == 403) {
+    logoutController.logout();
+  }
+
+  return response;
+}
+
 Future<http.Response> ssuDelete(
   Uri url, {
   Map<String, String>? headers,

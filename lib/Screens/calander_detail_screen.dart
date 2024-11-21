@@ -47,7 +47,7 @@ class CalanderDetailScreen extends StatelessWidget {
     );
   }
 
-  void _showEditDialog(BuildContext context) {
+  void _showEditDialog(BuildContext context, String title, String content) {
     showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
@@ -70,6 +70,7 @@ class CalanderDetailScreen extends StatelessWidget {
               ),
               onPressed: () {
                 // 수정 로직 추가해야함.
+                calanderCont.updateTag(tagNode, title, content);
 
                 Get.back(); // 대화상자 닫기
                 Get.back(); // 상세 화면 닫기
@@ -84,6 +85,7 @@ class CalanderDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String chgTitle = "", chgContent = "";
     return Scaffold(
       appBar: AppBar(
         title: const Text(""),
@@ -102,7 +104,9 @@ class CalanderDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             TextFormField(
-              onChanged: (value) {},
+              onChanged: (value) {
+                chgTitle = value;
+              },
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 14,
@@ -129,7 +133,9 @@ class CalanderDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             TextFormField(
-              onChanged: (value) {},
+              onChanged: (value) {
+                chgContent = value;
+              },
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 14,
@@ -162,7 +168,7 @@ class CalanderDetailScreen extends StatelessWidget {
               width: 100,
               child: TextButton(
                 onPressed: () {
-                  _showEditDialog(context); // 수정 다이얼로그 표시
+                  _showEditDialog(context, chgTitle, chgContent); // 수정 다이얼로그 표시
                 },
                 style: TextButton.styleFrom(
                   splashFactory: NoSplash.splashFactory,

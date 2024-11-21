@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:get/get.dart';
 import 'package:scheduler/Components/ApiHelper.dart';
+import 'package:scheduler/Components/Reissue.dart';
 import 'package:scheduler/ConfigJH.dart';
 
 class RegisterController extends GetxController {
@@ -92,7 +93,7 @@ class RegisterController extends GetxController {
   // ID 중복확인 버튼 터치 시
   void handleCheckId() async {
     final url = Uri.http(SERVER_DOMAIN, "users/check/id");
-    final response = await http.post(
+    final response = await ssuPost(
       url,
       headers: {
         'Content-Type': 'application/json',
@@ -119,7 +120,7 @@ class RegisterController extends GetxController {
   // Email 인증하기 버튼 터치 시
   void handleReciveCode() async {
     final url = Uri.http(SERVER_DOMAIN, "users/check/email");
-    final response = await http.post(
+    final response = await ssuPost(
       url,
       headers: {
         'Content-Type': 'application/json',

@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:scheduler/Components/ApiHelper.dart';
 
 import 'package:get/get.dart';
+import 'package:scheduler/Components/Reissue.dart';
 import 'package:scheduler/ConfigJH.dart';
 import 'package:scheduler/Controllers/token_controller.dart';
 
@@ -18,7 +19,7 @@ class UserinfoController extends GetxController {
   Future<void> getUserInfo() async {
     print(tokenController.accessToken);
     final url = Uri.http(SERVER_DOMAIN, "users");
-    final response = await http.get(url, headers: {
+    final response = await ssuGet(url, headers: {
       'Content-Type': 'application/json',
       "Authorization": tokenController.accessToken.toString(),
     });
