@@ -37,6 +37,6 @@ class UserinfoController extends GetxController {
     email = responseData.getBodyValueOne("email").toString();
     profileImg = responseData.getBodyValueOne("profileImg").toString();
 
-    print(nickname + " : " + address + ", id=" + loginId);
+    print("$nickname : $address, id=$loginId");
   }
 }

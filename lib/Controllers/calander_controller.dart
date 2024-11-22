@@ -70,7 +70,8 @@ class CalanderController extends GetxController {
   //     tagMap[key] = [adder];
   //   }
   // }
-  void updateTag(TagNode myTag, String title, String content) async {
+  void updateTag(
+      TagNode myTag, String title, String content, DateTime? selectTime) async {
     TagNode newTag = TagNode(
         title: title != "" ? title : myTag.title,
         content: content != "" ? content : myTag.content,
@@ -78,10 +79,13 @@ class CalanderController extends GetxController {
         sid: myTag.sid,
         tag: myTag.tag);
 
-    print(newTag.title + ": " + newTag.content + "[sid=${newTag.sid}]");
+    selectTime ??= myTag.timeDetail;
 
-    DateTime dateTime = DateTime(
-        newTag.timeDetail.year, newTag.timeDetail.month, newTag.timeDetail.day);
+    print(
+        "${newTag.title}: ${newTag.content}[sid=${newTag.sid}], updateDate=${selectTime.toString()}");
+
+    DateTime dateTime =
+        DateTime(selectTime.year, selectTime.month, selectTime.day);
     String stringTime = dateTime.toIso8601String();
     final url = Uri.http(SERVER_DOMAIN, "/calenders/${newTag.sid}");
     final response = await ssuPatch(
@@ -93,9 +97,9 @@ class CalanderController extends GetxController {
       body: jsonEncode(
         {
           "dateInfo": {
-            "year": newTag.timeDetail.year,
-            "month": newTag.timeDetail.month,
-            "day": newTag.timeDetail.day
+            "year": selectTime.year,
+            "month": selectTime.month,
+            "day": selectTime.day
           },
           "title": newTag.title,
           "content": newTag.content,

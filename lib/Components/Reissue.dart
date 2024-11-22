@@ -17,8 +17,8 @@ Future<http.Response> ssuPost(
   http.Response response = await http.post(url, headers: headers, body: body);
 
   ApiHelper apiHelper = ApiHelper(response.body);
-  final return_code = apiHelper.getResultCode();
-  if (return_code == 401) {
+  final returnCode = apiHelper.getResultCode();
+  if (returnCode == 401) {
     print(tokenController.refreshToken.toString());
     final reissueResponse = await http.post(
         Uri.http(SERVER_DOMAIN, "users/reissue"),
@@ -38,7 +38,7 @@ Future<http.Response> ssuPost(
     }
     // 재요청
     response = await http.post(url, headers: headers, body: body);
-  } else if (return_code == 403) {
+  } else if (returnCode == 403) {
     logoutController.logout();
   }
 

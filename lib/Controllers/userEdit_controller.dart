@@ -173,7 +173,7 @@ class UserChangeController extends GetxController {
     profileImg = responseData.getBodyValueOne("profileImg").toString();
     */
 
-    print(nickname + " : " + address + ", id=" + loginId);
+    print("$nickname : $address, id=$loginId");
     showAlertDialog(context, "수정 완료", const ProfileScreen());
   }
 
@@ -187,7 +187,7 @@ class UserChangeController extends GetxController {
     final url =
         Uri.parse(baseUrl.toString()).replace(queryParameters: queryParams);
 
-    print("[변경] originPW:" + originPw + ", newPW:" + newPw);
+    print("[변경] originPW:$originPw, newPW:$newPw");
 
     final response = await ssuPatch(url,
         headers: {
@@ -211,7 +211,7 @@ class UserChangeController extends GetxController {
     profileImg = responseData.getBodyValueOne("profileImg").toString();
     */
 
-    print(nickname + " : " + address + ", id=" + loginId);
+    print("$nickname : $address, id=$loginId");
     showAlertDialog(context, "비밀번호 변경 완료", LoginScreen());
   }
 
