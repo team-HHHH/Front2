@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
+import 'package:scheduler/Components/ButtonContainer.dart';
 import 'package:scheduler/ConfigJH.dart';
 import 'package:scheduler/Controllers/register_controller.dart';
 import 'package:scheduler/Controllers/token_controller.dart';
+import 'package:scheduler/Controllers/userEdit_controller.dart';
 import 'package:scheduler/Screens/register_detail_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -19,14 +21,36 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final RegisterController registerController = Get.put(RegisterController());
+  final userCont = Get.put(UserChangeController());
+  String _userEmail = "baejh724@gmail.com";
+  final TextEditingController _newEmailController = TextEditingController();
+  final TextEditingController _newEmailCodeController = TextEditingController();
+
   var _isChecked1 = false;
   var _isChecked2 = false;
   var _isChecked3 = false;
   var _isChecked4 = false;
+
+  String passwordMessage = "";
+  String idMessage = "";
+
+  void updatePasswordMessage() {
+    setState(() {
+      passwordMessage = registerController.getPasswordMessage();
+    });
+  }
+
+  void updateIDMessage() {
+    setState(() {
+      idMessage = registerController.getIdMessage();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      backgroundColor: Colors.white,
       floatingActionButton: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
         child: SizedBox(
@@ -34,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           height: 40,
           child: TextButton(
             onPressed: () {
-              registerController.handleNext();
+              registerController.handleNext(context);
               Get.to(const RegisterDetailScreen());
             },
             style: TextButton.styleFrom(
@@ -53,6 +77,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: Colors.white,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0), // 구분선의 두께
           child: Divider(
@@ -117,6 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: TextField(
                             onChanged: (newValue) {
                               registerController.updateId(newValue);
+                              updateIDMessage();
                             },
                             style: const TextStyle(
                               color: Colors.black,
@@ -153,9 +179,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: SizedBox(
                           height: 40,
                           child: TextButton(
-                            onPressed: () {
+                            onPressed: () async {
                               //_formKey.currentState!.save();
-                              registerController.handleCheckId();
+                              await registerController.handleCheckId();
+                              updateIDMessage();
                             },
                             style: TextButton.styleFrom(
                               splashFactory: NoSplash.splashFactory,
@@ -173,6 +200,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
+                  registerController.getIdMsgWidget(),
+                  /*
                   SizedBox(
                     height: 20,
                     child: Text(
@@ -184,11 +213,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
+                  */
                   SizedBox(
                     height: 40,
                     child: TextFormField(
                       onChanged: (value) {
                         registerController.updatePassword(value);
+                        updatePasswordMessage();
                       },
                       style: const TextStyle(
                         color: Colors.black,
@@ -223,6 +254,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: TextFormField(
                       onChanged: (value) {
                         registerController.updatePassword2(value);
+                        updatePasswordMessage();
                       },
                       style: const TextStyle(
                         color: Colors.black,
@@ -251,6 +283,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
+                  registerController.getPasswordMsgWidget(),
+                  BlueButtonEmail(
+                    controller: _newEmailController,
+                    controller_check: _newEmailCodeController,
+                    hint_text: _userEmail,
+                    hint_text_code: "인증코드(6자리)",
+                    context: context,
+                    buttonName: "이메일 전송하기",
+                    buttonName_code: "인증하기",
+                    type1: "일치하지 않는 코드입니다",
+                    type2: "인증에 성공하셨습니다",
+                    type3: "이미 존재하는 이메일입니다",
+                    handler: () async {
+                      _newEmailController.text != ""
+                          ? userCont.setEmail(_newEmailController.text)
+                          : userCont.setEmail(_userEmail);
+                      return await userCont.email_sender();
+                    },
+                    send_handler: () async {
+                      registerController.enteredEmail =
+                          RxString(_newEmailCodeController.text);
+                      return await userCont
+                          .email_checker(_newEmailCodeController.text);
+                    },
+                  ),
+                  /*
                   SizedBox(
                     height: 20,
                     child: Text(
@@ -262,6 +320,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
+                  */
+                  /*
                   Row(
                     children: [
                       Expanded(
@@ -308,7 +368,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           height: 40,
                           child: TextButton(
                             onPressed: () {
-                              registerController.handleCheckCode();
+                              registerController.handleReciveCode();
                             },
                             style: TextButton.styleFrom(
                               splashFactory: NoSplash.splashFactory,
@@ -326,6 +386,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ],
                   ),
+                  */
                   const SizedBox(height: 20),
                   registerController.isReceivedCode.value
                       ? Row(

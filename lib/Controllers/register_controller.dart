@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:get/get.dart';
+import 'package:scheduler/Components/Alert.dart';
 import 'package:scheduler/Components/ApiHelper.dart';
 import 'package:scheduler/Components/Reissue.dart';
 import 'package:scheduler/ConfigJH.dart';
+import 'package:scheduler/Controllers/calander_controller.dart';
+import 'package:scheduler/Screens/register_screen.dart';
 
 class RegisterController extends GetxController {
   var enteredId = "".obs;
@@ -59,6 +63,69 @@ class RegisterController extends GetxController {
     return "";
   }
 
+  SizedBox getIdMsgWidget() {
+    Color color = Colors.red;
+    String retString = "";
+    if (enteredId.value.length < 4 || enteredId.value.length > 16) {
+      retString = "  아이디는 4자이상 16자이하입니다.";
+    }
+    // 정규 표현식: 숫자와 영어만 포함되고 특수문자는 없음
+    final RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
+
+    if (!regex.hasMatch(enteredId.value)) {
+      retString = "  아이디는 영어,숫자만 가능합니다.";
+    }
+
+    print(isDuplicateId.value);
+    if (isDuplicateId.value == "true") {
+      retString = "  이미 존재하는 아이디입니다.";
+    } else if (isDuplicateId.value == "false") {
+      retString = "  사용 가능한 아이디입니다.";
+      color = Colors.blue;
+    }
+    return SizedBox(
+      height: 20,
+      child: Text(
+        retString,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
+      ),
+    );
+  }
+
+  SizedBox getPasswordMsgWidget() {
+    Color color = Colors.red;
+    String retString = "";
+    if (enteredPassword.value.length < 4 ||
+        enteredPassword.value.length > 16 ||
+        enteredPassword2.value.length < 4 ||
+        enteredPassword2.value.length > 16) {
+      retString = "  비밀번호는 4자이상 16자이하입니다.";
+    }
+
+    if (enteredPassword.value != enteredPassword2.value) {
+      retString = "  동일한 비밀번호를 입력해주세요.";
+    } else {
+      retString = "  사용 가능한 비밀번호입니다.";
+      color = Colors.blue;
+    }
+
+    return SizedBox(
+      height: 20,
+      child: Text(
+        retString,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
+      ),
+    );
+  }
+
   String getPasswordMessage() {
     if (enteredPassword.value.length < 4 ||
         enteredPassword.value.length > 16 ||
@@ -91,9 +158,10 @@ class RegisterController extends GetxController {
   }
 
   // ID 중복확인 버튼 터치 시
-  void handleCheckId() async {
+  Future<void> handleCheckId() async {
     final url = Uri.http(SERVER_DOMAIN, "users/check/id");
-    final response = await ssuPost(
+    print(url);
+    final response = await http.post(
       url,
       headers: {
         'Content-Type': 'application/json',
@@ -104,16 +172,14 @@ class RegisterController extends GetxController {
         },
       ),
     );
-    if (response.statusCode == 200) return;
+    if (response.statusCode != 200) return;
     final responseData = ApiHelper(response.body);
     final resultCode = responseData.getResultCode();
     if (resultCode != 200) return;
 
     final resultMessage = responseData.getResultMessage();
-    print(resultMessage);
     final isDuplicated =
-        responseData.getBodyValue("duplicated").toString() == "true";
-
+        responseData.getBodyValueOne("duplicated").toString() == "true";
     isDuplicateId.value = isDuplicated ? "true" : "false";
   }
 
@@ -131,7 +197,7 @@ class RegisterController extends GetxController {
         },
       ),
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode != 200) {
       isReceivedCode.value = false;
       return;
     }
@@ -192,7 +258,7 @@ class RegisterController extends GetxController {
   }
 
   // 계속하기 버튼 터치 시
-  void handleNext() async {
+  void handleNext(BuildContext context) async {
     final url = Uri.http(SERVER_DOMAIN, "/users/register");
     final response = await http.post(
       url,
@@ -211,7 +277,11 @@ class RegisterController extends GetxController {
     final responseData = ApiHelper(response.body);
     final resultCode = responseData.getResultCode();
 
-    if (resultCode != 200) return;
+    if (resultCode != 200) {
+      showAlertDialog(
+          context, responseData.getResultMessage(), const RegisterScreen());
+    }
+    ;
 
     final resultMessage = responseData.getResultMessage();
     print(resultMessage);

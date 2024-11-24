@@ -51,6 +51,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: topBarDefault("회원정보 수정", "", null),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
         child: Column(
@@ -129,9 +130,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   await userCont.changeUserInfo(context);
                 },
                 style: TextButton.styleFrom(
-                  splashFactory: NoSplash.splashFactory,
-                  backgroundColor: Theme.of(context).primaryColor,
-                ),
+                    splashFactory: NoSplash.splashFactory,
+                    backgroundColor: SSU_BLACK
+                    //backgroundColor: Theme.of(context).primaryColor,
+                    ),
                 child: const Text(
                   "회원정보 변경",
                   style: TextStyle(

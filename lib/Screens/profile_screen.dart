@@ -54,6 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: topBarDefault("회원정보 수정", "수정", const ProfileEditScreen()),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
         child: Column(
@@ -118,13 +119,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             /************* 부가정보  *************/
 
+            dividerBar(),
             Container(
               height: 30,
             ), //Margin
-
-            dividerBar(),
             grayTextButton("로그아웃", logoutCont),
-            grayTextButton("회원탈퇴", () {}),
+
+            //grayTextButton("회원탈퇴", () {}),
           ],
         ),
       ),

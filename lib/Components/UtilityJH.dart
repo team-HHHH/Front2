@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:scheduler/Components/KakaoMapService.dart';
@@ -90,6 +91,7 @@ AppBar topBar(String text, String gotoUrl) {
 AppBar topBarDefault(String text, String buttonName, dynamic page) {
   print("클릭됨");
   return AppBar(
+      backgroundColor: Colors.white,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1.0), // 구분선의 두께
         child: Divider(
@@ -105,7 +107,7 @@ AppBar topBarDefault(String text, String buttonName, dynamic page) {
         icon: const Icon(
           Icons.arrow_back,
           size: 20,
-          color: SSU_BLUE,
+          color: SSU_BLACK,
         ),
       ),
       title: Text(text,
@@ -122,7 +124,7 @@ AppBar topBarDefault(String text, String buttonName, dynamic page) {
             child: Text(
               buttonName,
               style: const TextStyle(
-                color: SSU_BLUE,
+                color: SSU_BLACK,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
               ),
@@ -146,7 +148,7 @@ Widget keyValueText(String key, String value) {
         value,
         style: const TextStyle(
           fontSize: 13,
-          color: GRAY,
+          color: Colors.black,
           fontWeight: FontWeight.normal,
         ),
       )
@@ -168,8 +170,9 @@ Widget grayTextButton(String name, dynamic func) {
       child: Text(
         name,
         style: const TextStyle(
-          fontSize: 13, // 폰트 크기
-          color: GRAY, // 텍스트 색상
+          fontWeight: FontWeight.normal,
+          fontSize: 12, // 폰트 크기
+          color: SSU_BLACK, // 텍스트 색상
         ),
       ),
     ),
@@ -246,7 +249,7 @@ Widget grayInputLongWithSearch(
               suffixIcon: IconButton(
                   icon: const Icon(
                     Icons.search,
-                    color: SSU_BLUE,
+                    color: SSU_BLACK,
                   ),
                   onPressed: () async {
                     debugPrint("web view");

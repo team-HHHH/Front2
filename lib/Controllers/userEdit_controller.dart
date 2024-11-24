@@ -180,12 +180,7 @@ class UserChangeController extends GetxController {
   Future<void> changeUserPasswd(BuildContext context) async {
     print(tokenController.accessToken);
 
-    final Map<String, String> queryParams = {
-      "Authorization": tokenController.accessToken.toString(),
-    };
-    final baseUrl = Uri.http(SERVER_DOMAIN, "users");
-    final url =
-        Uri.parse(baseUrl.toString()).replace(queryParameters: queryParams);
+    final url = Uri.http(SERVER_DOMAIN, "users/change-password");
 
     print("[변경] originPW:$originPw, newPW:$newPw");
 
@@ -201,7 +196,10 @@ class UserChangeController extends GetxController {
     final resultCode = responseData.getResultCode();
     final resultMessage = responseData.getResultMessage();
     print(resultMessage);
-    if (resultCode != 200) return;
+    if (resultCode != 200) {
+      showAlertDialog(context, "기존 비밀번호가 일치하지 않습니다", const ProfileScreen());
+      return;
+    }
 
     /*
     nickname = responseData.getBodyValueOne("nickname").toString();

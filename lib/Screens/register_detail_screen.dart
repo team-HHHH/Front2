@@ -1,8 +1,15 @@
 import 'dart:convert';
-
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/get_core.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:scheduler/Components/ApiHelper.dart';
+import 'package:scheduler/Components/Reissue.dart';
 import 'package:scheduler/ConfigJH.dart';
+import 'package:scheduler/Controllers/token_controller.dart';
 
 class RegisterDetailScreen extends StatefulWidget {
   const RegisterDetailScreen({super.key});
@@ -12,11 +19,15 @@ class RegisterDetailScreen extends StatefulWidget {
 }
 
 class _RegisterDetailScreenState extends State<RegisterDetailScreen> {
+  final TokenController tokenController = Get.put(TokenController());
   String _enteredNickName = "";
   bool? _validNickName;
 
+  bool dupNickname = true;
   void _handleNickNameCheck() async {
-    final url = Uri.http("10.21.20.18:8080", "users/check/nickname");
+    print("in");
+    final url = Uri.http(SERVER_DOMAIN, "users/check/nickname");
+
     final response = await http.post(
       url,
       headers: {
@@ -24,61 +35,56 @@ class _RegisterDetailScreenState extends State<RegisterDetailScreen> {
       },
       body: jsonEncode(
         <String, String>{
-          "nickname": _enteredNickName,
+          "nickName": _enteredNickName,
         },
       ),
     );
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
+    final responseData = ApiHelper(response.body);
+    final resultCode = responseData.getResultCode();
 
-      // result 객체 추출
-      final Map<String, dynamic> result = responseData['result'];
-      final int resultCode = result['resultCode'];
-      final String resultMessage = result['resultMessage'];
-
-      // body 객체 추출
-      final Map<String, dynamic> body = responseData['body'];
-
-      final headers = response.headers;
-      final accessToken = headers["Authorization"];
-      final refreshToken = headers["refresh"];
+    if (resultCode != 200) {
+      return;
     }
 
-    _validNickName = true;
+    final resultMessage = responseData.getResultMessage();
+    print(resultMessage);
+
+    dupNickname =
+        responseData.getBodyValueOne("duplicated").toString() == "true";
+
+    setState(() {
+      _validNickName = !dupNickname;
+    });
+    print(_validNickName);
   }
 
   // 회원가입 완료하기 버튼 터치 시
   void _handleRegister() async {
-    // if (_validNickName == null || !_validNickName!) return;
-    final url = Uri.http("10.21.20.18:8080", "users/register-detailed");
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(
-        <String, String>{
-          "nickname": _enteredNickName,
-          "address": "",
-          "profileImg": "",
-        },
+    if (_validNickName == null || !_validNickName!) return;
+    final url = Uri.http(SERVER_DOMAIN, "users/register-detailed");
+    final request = http.MultipartRequest('PUT', url);
+    final ByteData tmpData =
+        await rootBundle.load("assets/images/DefaultProfile.png");
+    Uint8List poster = tmpData.buffer.asUint8List();
+
+    //debug *****************************
+
+    request.files.add(
+      http.MultipartFile.fromBytes(
+        'file',
+        poster,
+        filename: 'image.png',
+        contentType: MediaType('image', 'png'),
       ),
     );
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
+    request.fields['nickName'] = _enteredNickName;
+    request.fields['address'] = "서울시";
+    request.headers.addAll({
+      'Content-Type': 'application/json',
+      'authorization': tokenController.accessToken.toString()
+    });
 
-      // result 객체 추출
-      final Map<String, dynamic> result = responseData['result'];
-      final int resultCode = result['resultCode'];
-      final String resultMessage = result['resultMessage'];
-
-      // body 객체 추출
-      final Map<String, dynamic> body = responseData['body'];
-
-      final headers = response.headers;
-      final accessToken = headers["Authorization"];
-      final refreshToken = headers["refresh"];
-    }
+    final response = await ssuSend(request);
 
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
@@ -212,7 +218,9 @@ class _RegisterDetailScreenState extends State<RegisterDetailScreen> {
                     child: SizedBox(
                       height: 40,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _handleNickNameCheck();
+                        },
                         style: TextButton.styleFrom(
                             splashFactory: NoSplash.splashFactory,
                             backgroundColor: SSU_BLACK),
@@ -237,8 +245,8 @@ class _RegisterDetailScreenState extends State<RegisterDetailScreen> {
                     _validNickName!
                         ? "      사용가능한 닉네임입니다."
                         : "      이미 존재하는 닉네임입니다.",
-                    style: const TextStyle(
-                      color: Colors.red,
+                    style: TextStyle(
+                      color: _validNickName! ? Colors.blue : Colors.red,
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
                     ),

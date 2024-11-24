@@ -62,6 +62,7 @@ class _BlueButtonState extends State<BlueButton> {
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(0.0),
+                  backgroundColor: SSU_BLACK,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.0),
                     side: const BorderSide(
@@ -75,7 +76,7 @@ class _BlueButtonState extends State<BlueButton> {
                     widget.buttonName,
                     style: const TextStyle(
                         fontSize: 13, // 텍스트 크기
-                        color: SSU_BLACK),
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -175,6 +176,7 @@ class _BlueButtonEmailState extends State<BlueButtonEmail> {
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(0.0),
+                  backgroundColor: SSU_BLACK,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.0),
                     side: const BorderSide(
@@ -188,7 +190,7 @@ class _BlueButtonEmailState extends State<BlueButtonEmail> {
                     widget.buttonName,
                     style: const TextStyle(
                         fontSize: 13, // 텍스트 크기
-                        color: SSU_BLACK),
+                        color: Colors.white),
                   ),
                 ),
               ),

@@ -97,6 +97,7 @@ class _PasswordEditScreenState extends State<PasswordEditScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: topBarDefault("비밀번호 변경", "", "준혁이형 뭐하노 url"),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
@@ -171,9 +172,10 @@ class _PasswordEditScreenState extends State<PasswordEditScreen> {
                   //_formKey.currentState!.save();
                 },
                 style: TextButton.styleFrom(
-                  splashFactory: NoSplash.splashFactory,
-                  backgroundColor: Theme.of(context).primaryColor,
-                ),
+                    splashFactory: NoSplash.splashFactory,
+                    backgroundColor: SSU_BLACK
+                    //backgroundColor: Theme.of(context).primaryColor,
+                    ),
                 child: const Text(
                   "비밀번호 변경",
                   style: TextStyle(

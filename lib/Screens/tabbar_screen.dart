@@ -4,6 +4,7 @@ import 'package:scheduler/ConfigJH.dart';
 import 'package:scheduler/Screens/alarm_screen.dart';
 import 'package:scheduler/Screens/calander_screen.dart';
 import 'package:scheduler/Screens/post_list_screen.dart';
+import 'package:scheduler/Screens/profile_screen.dart';
 
 class TabBarScreen extends StatelessWidget {
   const TabBarScreen({super.key});
@@ -43,6 +44,10 @@ class TabBarScreen extends StatelessWidget {
           case 2:
             return CupertinoTabView(
               builder: (context) => const AlarmScreen(),
+            );
+          case 3:
+            return CupertinoTabView(
+              builder: (context) => const ProfileScreen(),
             );
           default:
             return Container();
