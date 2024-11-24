@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: const Color.fromARGB(255, 96, 193, 195),
         useMaterial3: true,
+        fontFamily: "Pretendard",
       ),
       //home: const CalanderScreen(),
       //home: const MainScreen(),

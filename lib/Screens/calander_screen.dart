@@ -89,7 +89,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
     double itemWidth = screenWidth / 8; // 너비를 화면의 1/8로 설정
     double dayHeight = screenHeight / 10;
     double WeekHeight = dayHeight / 3;
-
+    print(DefaultTextStyle.of(context).style.fontFamily);
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -164,7 +164,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
                                     "${calanderCont.year.toString()}년 ${calanderCont.month.toString()}월",
                                     style: const TextStyle(
                                       fontSize: 15,
-                                      color: CALANDER_TEXT_GRAY,
+                                      color: SSU_BLACK,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     textAlign: TextAlign.center,
