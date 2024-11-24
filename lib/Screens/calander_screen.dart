@@ -93,14 +93,11 @@ class _CalanderScreenState extends State<CalanderScreen> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          leadingWidth: 100,
+          leadingWidth: 30,
           leading: Container(
-            margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-            child: const Text(
-              "슈:\n케쥴러",
-              style: TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w500, color: SSU_BLACK),
-              maxLines: 2,
+            margin: const EdgeInsets.fromLTRB(10, 0, 0, 1),
+            child: Image.asset(
+              "assets/images/로고2.png",
             ),
           ),
           surfaceTintColor: Colors.white,

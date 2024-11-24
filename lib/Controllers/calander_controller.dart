@@ -258,6 +258,13 @@ class CalanderController extends GetxController {
   //   String key = '$year-$month-$day';
   // }
 
+  void plusPoster(String title, String content, DateTime endDate) async {
+    TagNode newTag =
+        await getSid(endDate.year, endDate.month, endDate.day, title, content);
+
+    Get.to(CalanderDetailScreen(tagNode: newTag));
+  }
+
   void summerizePosterGara(BuildContext context) async {
     garaIdx = garaIdx % 2;
     sleep(const Duration(seconds: 5));

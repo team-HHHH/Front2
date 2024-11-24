@@ -3,9 +3,13 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get_core/get_core.dart';
 import 'package:intl/intl.dart';
+import 'package:scheduler/Components/Alert.dart';
 import 'package:scheduler/ConfigJH.dart';
+import 'package:scheduler/Controllers/calander_controller.dart';
 import 'package:scheduler/Models/poster.dart';
+import 'package:get/get.dart';
 
 class PosterListScreen extends StatefulWidget {
   const PosterListScreen({super.key});
@@ -16,6 +20,7 @@ class PosterListScreen extends StatefulWidget {
 
 class _PosterListScreenState extends State<PosterListScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final calanderCont = Get.put(CalanderController());
 
   List<Poster> _filteredPosters = [];
   final List<Color> _pastelColors = [
@@ -80,6 +85,7 @@ class _PosterListScreenState extends State<PosterListScreen> {
   void showAddToCalendarAlert(int index) {
     int domain = int.parse(_selectedDomain);
     final title = _filteredPosters[domain].title;
+    final content = _filteredPosters[domain].domain;
     showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
@@ -96,6 +102,8 @@ class _PosterListScreenState extends State<PosterListScreen> {
             CupertinoDialogAction(
               onPressed: () {
                 Navigator.of(context).pop(); // Alert 닫기
+
+                //_filteredPosters[domain].endDate
               },
               isDefaultAction: true,
               child: const Text(
@@ -109,6 +117,11 @@ class _PosterListScreenState extends State<PosterListScreen> {
             CupertinoDialogAction(
               onPressed: () {
                 Navigator.of(context).pop(); // Alert 닫기
+                calanderCont.plusPoster(
+                    title,
+                    content,
+                    DateFormat("yyyy.MM.dd")
+                        .parse(_filteredPosters[domain].endDate));
               },
               child: const Text(
                 "네",

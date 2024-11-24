@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:scheduler/ConfigJH.dart';
+import 'package:scheduler/Screens/alarm_detail_screen.dart';
 
 class AlarmScreen extends StatefulWidget {
   const AlarmScreen({super.key});
@@ -11,7 +15,7 @@ class AlarmScreen extends StatefulWidget {
 
 class _AlarmScreenState extends State<AlarmScreen>
     with SingleTickerProviderStateMixin {
-  final List<String> _buttons = ["친구의 할일", "친구의 일기", "받은 좋아요", "소식 없음"];
+  final List<String> _buttons = ["친구의 할일", "친구의 일기", "받은 좋아요", "소식"];
   int _selectedIndex = -1;
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
@@ -47,14 +51,14 @@ class _AlarmScreenState extends State<AlarmScreen>
     setState(() {
       // "소식 없음" 버튼 클릭 시
       if (index == 3) {
-        _currentText = "소식 없음 화면"; // 소식 없음 화면 표시
-        _isTextVisible = true; // 텍스트는 바로 표시
+        _currentText = ""; // 소식 없음 화면 표시
+        _isTextVisible = true;
       } else {
         _currentText = "목록 없음"; // 다른 버튼 클릭 시 "목록 없음"으로 설정
         _isTextVisible = false; // 기존 텍스트를 숨김
       }
       _selectedIndex = index; // 버튼 클릭된 상태 업데이트
-      _nextText = _buttons[index];
+      _nextText = "목록 없음";
     });
 
     if (index != 3) {
@@ -152,21 +156,84 @@ class _AlarmScreenState extends State<AlarmScreen>
                         ),
                       ),
                     ),
-                  // 소식 없음 화면을 클릭했을 때만 나타낼 내용
-                  if (_currentText == "소식 없음 화면")
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        color: Colors.blueAccent.withOpacity(0.1),
-                        child: const Text(
-                          "여기에는 소식 관련 정보가 표시됩니다.",
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: SSU_BLACK,
+                  if (_currentText == "")
+                    Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(const AlarmDetailScreen());
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(14, 14, 14, 0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 35, // 원의 크기 (이미지보다 약간 크게 설정)
+                                      height: 35, // 원의 크기 (이미지보다 약간 크게 설정)
+                                      decoration: BoxDecoration(
+                                        color: Colors.white, // 원형 배경 색
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color:
+                                              SSU_BLACK, // 원 테두리 색 (원하는 색으로 변경)
+                                          width: 1, // 테두리의 두께
+                                        ), // 원 모양
+                                      ),
+                                      child: Image.asset(
+                                        "assets/images/로고2.png",
+                                        width: 14,
+                                        height: 14,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 14),
+                                    Expanded(
+                                      // `RichText`가 공간을 차지하도록 함
+                                      child: RichText(
+                                        text: const TextSpan(
+                                          text: '공지사항 : ', // 기본 스타일
+                                          style: TextStyle(
+                                            color: SSU_BLACK,
+                                            fontSize: 12,
+                                            fontWeight:
+                                                FontWeight.bold, // "공지사항"은 두껍게
+                                          ),
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                                text: "앱 업데이트 소식입니다."
+                                                    "이번 업데이트에서는 포스터 요약 기능이 iOS 17.4 버전으로 업그레이드되었습니다."
+                                                    "이제 iOS 17.4에서 제공하는 새로운 기능과 호환되어 보다 정확하고 빠른 요약 서비스를 제공할 수 있습니다."
+                                                    "이를 통해 사용자들이...",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                ) // 기본 스타일 유지
+                                                ),
+                                            TextSpan(
+                                              text: '4일전', // "14일전"은 엄청 얇게
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12,
+                                                fontWeight:
+                                                    FontWeight.normal, // 엄청 얇게
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        softWrap: true, // 줄 바꿈 허용
+                                        // 텍스트가 너무 길면 생략 처리
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      ],
+                    )
                 ],
               ),
             ),
