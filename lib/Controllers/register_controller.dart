@@ -41,19 +41,19 @@ class RegisterController extends GetxController {
 
   String getIdMessage() {
     if (enteredId.value.length < 4 || enteredId.value.length > 16) {
-      return "아이디는 4자이상 16자이하입니다.";
+      return "  아이디는 4자이상 16자이하입니다.";
     }
     // 정규 표현식: 숫자와 영어만 포함되고 특수문자는 없음
     final RegExp regex = RegExp(r'^[a-zA-Z0-9]+$');
 
     if (!regex.hasMatch(enteredId.value)) {
-      return "아이디는 영어,숫자만 가능합니다.";
+      return "  아이디는 영어,숫자만 가능합니다.";
     }
 
     if (isDuplicateId.value == "true") {
-      return "이미 존재하는 아이디입니다.";
+      return "  이미 존재하는 아이디입니다.";
     } else if (isDuplicateId.value == "false") {
-      return "사용 가능한 아이디입니다.";
+      return "  사용 가능한 아이디입니다.";
     }
 
     return "";
@@ -64,14 +64,14 @@ class RegisterController extends GetxController {
         enteredPassword.value.length > 16 ||
         enteredPassword2.value.length < 4 ||
         enteredPassword2.value.length > 16) {
-      return "비밀번호는 4자이상 16자이하입니다.";
+      return "  비밀번호는 4자이상 16자이하입니다.";
     }
 
     if (enteredPassword.value != enteredPassword2.value) {
-      return "동일한 비밀번호를 입력해주세요.";
+      return "  동일한 비밀번호를 입력해주세요.";
     }
 
-    return "사용 가능한 비밀번호입니다.";
+    return "  사용 가능한 비밀번호입니다.";
   }
 
   String getCodeMessage() {
@@ -80,13 +80,13 @@ class RegisterController extends GetxController {
     );
 
     if (emailRegExp.hasMatch(enteredEmail.value)) {
-      return "올바른 이메일 형식이 아닙니다.";
+      return "  올바른 이메일 형식이 아닙니다.";
     }
 
     if (isDuplicatedEmail.value == "true") {
-      return "이미 존재하는 이메일입니다.";
+      return "  이미 존재하는 이메일입니다.";
     } else {
-      return "6자리 코드를 입력하세요.";
+      return "  6자리 코드를 입력하세요.";
     }
   }
 

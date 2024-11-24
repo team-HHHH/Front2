@@ -12,9 +12,9 @@ class MypageScreen extends StatefulWidget {
 }
 
 class _MypageScreenState extends State<MypageScreen> {
-  String _userImg = "assets/images/DefaultProfile.png";
-  String _userNickName = "준혁이형 후계자";
-  String _userEmail = "baejh724@gmail.com";
+  final String _userImg = "assets/images/DefaultProfile.png";
+  final String _userNickName = "준혁이형 후계자";
+  final String _userEmail = "baejh724@gmail.com";
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class _MypageScreenState extends State<MypageScreen> {
                     ),
                     const Icon(
                       Icons.arrow_forward_ios,
-                      color: SSU_BLUE,
+                      color: SSU_BLACK,
                     )
                   ],
                 ),

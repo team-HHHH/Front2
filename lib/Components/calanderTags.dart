@@ -16,8 +16,10 @@ List<Color> GREEN_TAG = const [
   Colors.green,
 ];
 List<Color> BLACK_TAG = const [
-  Color(0xFFE8E8E8),
-  Color(0xFFE8E8E8),
+  // Color(0xFFE8E8E8),
+  // Color(0xFFE8E8E8),
+  Colors.white,
+  Colors.white,
   Colors.black,
 ];
 List<Color> RED_TAG = const [
@@ -27,12 +29,12 @@ List<Color> RED_TAG = const [
 ];
 
 Container tags(List<Color> color, String text, double width, double height) {
-  double tagHeight = height / 6.5;
+  double tagHeight = height / 6.8;
   return Container(
     width: width,
     height: tagHeight,
-    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-    margin: EdgeInsets.fromLTRB(0, 0, 0, tagHeight / 5),
+    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+    margin: EdgeInsets.fromLTRB(1, 0, 1, tagHeight / 5),
     decoration: BoxDecoration(
       gradient: LinearGradient(
         colors: [
@@ -47,13 +49,13 @@ Container tags(List<Color> color, String text, double width, double height) {
     ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Flexible(
           child: Text(
             text,
             style: TextStyle(
-                color: color[2], fontSize: 10, fontWeight: FontWeight.bold),
+                color: color[2], fontSize: 7, fontWeight: FontWeight.normal),
             softWrap: true, // 자동 줄바꿈 활성화
             overflow: TextOverflow.ellipsis, // 넘칠 경우 ...으로 표시
           ),

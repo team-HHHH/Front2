@@ -5,15 +5,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
+import 'package:scheduler/ConfigJH.dart';
 import 'package:scheduler/Controllers/register_controller.dart';
 import 'package:scheduler/Controllers/token_controller.dart';
 import 'package:scheduler/Screens/register_detail_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final RegisterController registerController = Get.put(RegisterController());
-
+  var _isChecked1 = false;
+  var _isChecked2 = false;
+  var _isChecked3 = false;
+  var _isChecked4 = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,10 +35,11 @@ class RegisterScreen extends StatelessWidget {
           child: TextButton(
             onPressed: () {
               registerController.handleNext();
+              Get.to(const RegisterDetailScreen());
             },
             style: TextButton.styleFrom(
               splashFactory: NoSplash.splashFactory,
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: SSU_BLACK,
             ),
             child: const Text(
               "계속하기",
@@ -61,7 +71,7 @@ class RegisterScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -128,9 +138,9 @@ class RegisterScreen extends StatelessWidget {
                                   ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25),
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 2.0,
+                                borderSide: const BorderSide(
+                                  color: SSU_BLACK,
+                                  width: 1.25,
                                 ), // 포커스 상태에서 테두리 색상
                               ),
                             ),
@@ -149,7 +159,7 @@ class RegisterScreen extends StatelessWidget {
                             },
                             style: TextButton.styleFrom(
                               splashFactory: NoSplash.splashFactory,
-                              backgroundColor: Theme.of(context).primaryColor,
+                              backgroundColor: SSU_BLACK,
                             ),
                             child: const Text(
                               "중복확인",
@@ -199,9 +209,9 @@ class RegisterScreen extends StatelessWidget {
                             ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                            width: 2.0,
+                          borderSide: const BorderSide(
+                            color: SSU_BLACK,
+                            width: 1.25,
                           ), // 포커스 상태에서 테두리 색상
                         ),
                       ),
@@ -233,9 +243,9 @@ class RegisterScreen extends StatelessWidget {
                             ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide(
-                            color: Theme.of(context).primaryColor,
-                            width: 2.0,
+                          borderSide: const BorderSide(
+                            color: SSU_BLACK,
+                            width: 1.25,
                           ), // 포커스 상태에서 테두리 색상
                         ),
                       ),
@@ -282,9 +292,9 @@ class RegisterScreen extends StatelessWidget {
                                   ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25),
-                                borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 2.0,
+                                borderSide: const BorderSide(
+                                  color: SSU_BLACK,
+                                  width: 1.25,
                                 ), // 포커스 상태에서 테두리 색상
                               ),
                             ),
@@ -302,7 +312,7 @@ class RegisterScreen extends StatelessWidget {
                             },
                             style: TextButton.styleFrom(
                               splashFactory: NoSplash.splashFactory,
-                              backgroundColor: Theme.of(context).primaryColor,
+                              backgroundColor: SSU_BLACK,
                             ),
                             child: const Text(
                               "인증하기",
@@ -352,7 +362,7 @@ class RegisterScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(25),
                                       borderSide: BorderSide(
                                         color: Theme.of(context).primaryColor,
-                                        width: 2.0,
+                                        width: 1.25,
                                       ), // 포커스 상태에서 테두리 색상
                                     ),
                                   ),
@@ -388,7 +398,7 @@ class RegisterScreen extends StatelessWidget {
                       : const SizedBox(),
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
               const Text(
                 "서비스 이용약관 동의",
                 style: TextStyle(
@@ -405,40 +415,112 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                "[필수] 만 14세 이상입니다.",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "[필수] 만 14세 이상입니다.",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: _isChecked1 ? SSU_BLACK : Colors.grey,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
+                    child: Checkbox(
+                      value: _isChecked1,
+                      checkColor: Colors.white,
+                      hoverColor: SSU_GRAY,
+                      activeColor: SSU_BLACK,
+                      onChanged: (newValue) {
+                        _isChecked1 = newValue!;
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ],
               ),
               const SizedBox(height: 10),
-              const Text(
-                "[필수] 이용약관 동의",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "[필수] 이용약관 동의",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: _isChecked2 ? SSU_BLACK : Colors.grey,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
+                    child: Checkbox(
+                      checkColor: Colors.white,
+                      hoverColor: SSU_GRAY,
+                      activeColor: SSU_BLACK,
+                      value: _isChecked2,
+                      onChanged: (newValue) {
+                        _isChecked2 = newValue!;
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ],
               ),
               const SizedBox(height: 10),
-              const Text(
-                "[필수] 개인정보 수집 및 이용 동의",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "[필수] 개인정보 수집 및 이용 동의",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: _isChecked3 ? SSU_BLACK : Colors.grey,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
+                    child: Checkbox(
+                      value: _isChecked3,
+                      checkColor: Colors.white,
+                      hoverColor: SSU_GRAY,
+                      activeColor: SSU_BLACK,
+                      onChanged: (newValue) {
+                        _isChecked3 = newValue!;
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ],
               ),
               const SizedBox(height: 10),
-              const Text(
-                "[선택] 광고성 정보 수신 / 마케팅 활용 동의",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "[선택] 광고성 정보 수신 / 마케팅 활용 동의",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: _isChecked4 ? SSU_BLACK : Colors.grey,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
+                    child: Checkbox(
+                      value: _isChecked4,
+                      checkColor: Colors.white,
+                      hoverColor: SSU_GRAY,
+                      activeColor: SSU_BLACK,
+                      onChanged: (newValue) {
+                        _isChecked4 = newValue!;
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ],
               ),
             ],
           ),

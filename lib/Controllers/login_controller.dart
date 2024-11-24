@@ -17,6 +17,7 @@ import 'package:scheduler/Screens/login_screen.dart';
 import 'package:scheduler/Screens/profile_screen.dart';
 import 'package:scheduler/Screens/register_detail_screen.dart';
 import 'package:scheduler/Screens/register_screen.dart';
+import 'package:scheduler/Screens/tabbar_screen.dart';
 
 // 로그인과 관련된 비즈니스 로직 수행
 //
@@ -79,11 +80,11 @@ class LoginController extends GetxController {
 
     //// Debugging
 
-    Get.to(const CalanderScreen());
+    Get.to(const TabBarScreen());
   }
 
   void handleRegister() {
-    Get.to(RegisterScreen());
+    Get.to(const RegisterScreen());
   }
 
   // Oauth 로그인 버튼 클릭 시

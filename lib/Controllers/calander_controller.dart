@@ -362,23 +362,24 @@ class CalanderController extends GetxController {
       if (tagList != null) {
         for (int i = 0; i < tagMap[key]!.length && i < 2; i++) {
           int tagInfo = tagList[i].tag;
-          switch (tagInfo) {
-            case 1:
-              li.add(BlueTag(tagList[i].title, width, height));
-              break;
-            case 2:
-              li.add(YellowTag(tagList[i].title, width, height));
-              break;
-            case 3:
-              li.add(GreenTag(tagList[i].title, width, height));
-              break;
-            case 4:
-              li.add(BlackTag(tagList[i].title, width, height));
-              break;
-            case 5:
-              li.add(RedTag(tagList[i].title, width, height));
-              break;
-          }
+          li.add(BlackTag(tagList[i].title, width, height));
+          // switch (tagInfo) {
+          //   case 1:
+          //     li.add(BlueTag(tagList[i].title, width, height));
+          //     break;
+          //   case 2:
+          //     li.add(YellowTag(tagList[i].title, width, height));
+          //     break;
+          //   case 3:
+          //     li.add(GreenTag(tagList[i].title, width, height));
+          //     break;
+          //   case 4:
+          //     li.add(BlackTag(tagList[i].title, width, height));
+          //     break;
+          //   case 5:
+          //     li.add(RedTag(tagList[i].title, width, height));
+          //     break;
+          // }
         }
       }
     }

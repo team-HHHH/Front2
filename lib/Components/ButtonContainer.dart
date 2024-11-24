@@ -13,8 +13,9 @@ class BlueButton extends StatefulWidget {
   final String type2;
   final Function handler;
 
-  BlueButton(
-      {required this.controller,
+  const BlueButton(
+      {super.key,
+      required this.controller,
       required this.hint_text,
       required this.context,
       required this.buttonName,
@@ -60,11 +61,11 @@ class _BlueButtonState extends State<BlueButton> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(0.0),
+                  padding: const EdgeInsets.all(0.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.0),
                     side: const BorderSide(
-                      color: SSU_BLUE, // 버튼 테두리 색상
+                      color: SSU_BLACK, // 버튼 테두리 색상
                       width: 1.0, // 버튼 테두리 두께
                     ),
                   ),
@@ -74,7 +75,7 @@ class _BlueButtonState extends State<BlueButton> {
                     widget.buttonName,
                     style: const TextStyle(
                         fontSize: 13, // 텍스트 크기
-                        color: SSU_BLUE),
+                        color: SSU_BLACK),
                   ),
                 ),
               ),
@@ -125,8 +126,9 @@ class BlueButtonEmail extends StatefulWidget {
   final Function handler;
   final Function send_handler;
 
-  BlueButtonEmail(
-      {required this.controller,
+  const BlueButtonEmail(
+      {super.key,
+      required this.controller,
       required this.controller_check,
       required this.hint_text,
       required this.hint_text_code,
@@ -172,11 +174,11 @@ class _BlueButtonEmailState extends State<BlueButtonEmail> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(0.0),
+                  padding: const EdgeInsets.all(0.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25.0),
                     side: const BorderSide(
-                      color: SSU_BLUE, // 버튼 테두리 색상
+                      color: SSU_BLACK, // 버튼 테두리 색상
                       width: 1.0, // 버튼 테두리 두께
                     ),
                   ),
@@ -186,7 +188,7 @@ class _BlueButtonEmailState extends State<BlueButtonEmail> {
                     widget.buttonName,
                     style: const TextStyle(
                         fontSize: 13, // 텍스트 크기
-                        color: SSU_BLUE),
+                        color: SSU_BLACK),
                   ),
                 ),
               ),
@@ -195,7 +197,7 @@ class _BlueButtonEmailState extends State<BlueButtonEmail> {
         ),
         if (closed == 1)
           Container(
-              padding: EdgeInsets.symmetric(vertical: 20),
+              padding: const EdgeInsets.symmetric(vertical: 20),
               child: BlueButton(
                   controller: widget.controller_check,
                   hint_text: widget.hint_text_code,

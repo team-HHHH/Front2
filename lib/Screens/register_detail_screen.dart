@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:scheduler/ConfigJH.dart';
 
 class RegisterDetailScreen extends StatefulWidget {
   const RegisterDetailScreen({super.key});
@@ -99,7 +100,7 @@ class _RegisterDetailScreenState extends State<RegisterDetailScreen> {
             },
             style: TextButton.styleFrom(
               splashFactory: NoSplash.splashFactory,
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: SSU_BLACK,
             ),
             child: const Text(
               "회원가입 완료하기",
@@ -196,9 +197,9 @@ class _RegisterDetailScreenState extends State<RegisterDetailScreen> {
                               ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                              width: 2.0,
+                            borderSide: const BorderSide(
+                              color: SSU_BLACK,
+                              width: 1.25,
                             ), // 포커스 상태에서 테두리 색상
                           ),
                         ),
@@ -213,9 +214,8 @@ class _RegisterDetailScreenState extends State<RegisterDetailScreen> {
                       child: TextButton(
                         onPressed: () {},
                         style: TextButton.styleFrom(
-                          splashFactory: NoSplash.splashFactory,
-                          backgroundColor: Theme.of(context).primaryColor,
-                        ),
+                            splashFactory: NoSplash.splashFactory,
+                            backgroundColor: SSU_BLACK),
                         child: const Text(
                           "중복확인",
                           style: TextStyle(

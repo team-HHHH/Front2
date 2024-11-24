@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -29,6 +30,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
   final List<String> weekdays = ["일", "월", "화", "수", "목", "금", "토"];
   final calanderCont = Get.put(CalanderController());
   int _selectedDay = 0;
+  List<int> randomNumber = [1, 5, 2];
   List<TagNode> selectedTags = [];
 
   List<List<int>> viewDays = [
@@ -69,6 +71,17 @@ class _CalanderScreenState extends State<CalanderScreen> {
     });
   }
 
+  void makeRandomNumber() {
+    final random = Random(); // Random 클래스 생성
+    int r1 = random.nextInt(6); // 0부터 5까지의 정수 생성
+    int r2 = random.nextInt(6);
+    int r3 = random.nextInt(6);
+
+    randomNumber[0] = r1;
+    randomNumber[1] = r2;
+    randomNumber[2] = r3;
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -78,31 +91,53 @@ class _CalanderScreenState extends State<CalanderScreen> {
     double WeekHeight = dayHeight / 3;
 
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          centerTitle: true,
+          leadingWidth: 100,
+          leading: Container(
+            margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+            child: const Text(
+              "슈:\n케쥴러",
+              style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.w500, color: SSU_BLACK),
+              maxLines: 2,
+            ),
+          ),
+          surfaceTintColor: Colors.white,
+          backgroundColor: Colors.white,
           actions: [
-            IconButton(
-              onPressed: () {
-                print("카메라 버튼 터치!");
-                calanderCont.summerizePosterUrgen(context);
-                /*
-                Get.to(() => const CameraScreen(),
-                    transition: Transition.cupertino);
-                */
-              },
-              icon: const Icon(
-                Icons.camera_alt_outlined,
-                color: SSU_BLUE,
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 15, 20),
+              child: const Icon(
+                Icons.near_me_outlined,
+                color: SSU_BLACK,
+                size: 20,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+              child: const Icon(
+                Icons.access_time_outlined,
+                color: SSU_BLACK,
+                size: 20,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+              child: IconButton(
+                onPressed: () {
+                  calanderCont.summerizePosterUrgen(context);
+                  Get.to(() => const CameraScreen(),
+                      transition: Transition.cupertino);
+                },
+                icon: const Icon(
+                  Icons.camera_alt_outlined,
+                  color: SSU_BLACK,
+                  size: 20,
+                ),
               ),
             )
           ],
-          title: const Text(
-            "Calander",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
         ),
         body: SafeArea(
           child: Obx(
@@ -113,35 +148,102 @@ class _CalanderScreenState extends State<CalanderScreen> {
                 SizedBox(
                   height: 40,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Transform.scale(
-                        scale: 0.8,
+                      Expanded(
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            IconButton(
-                                icon: const Icon(Icons.arrow_left, size: 30),
-                                color: SSU_BLUE,
-                                onPressed: () {
-                                  calanderCont.monthDown();
-                                  chgDate(
-                                      calanderCont.year, calanderCont.month);
-                                }),
-                            Text(
-                              "${calanderCont.year.toString()}년 ${calanderCont.month.toString()}월",
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: CALANDER_TEXT_GRAY,
-                                fontWeight: FontWeight.bold,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(14, 0, 0, 0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "${calanderCont.year.toString()}년 ${calanderCont.month.toString()}월",
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      color: CALANDER_TEXT_GRAY,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(width: 20),
+                                  const Icon(
+                                    Icons.event,
+                                    size: 16,
+                                    color: Colors.green,
+                                  ),
+                                  Text(
+                                    "${randomNumber[0]}",
+                                    style: const TextStyle(
+                                      color: SSU_BLACK,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 2, 3),
+                                    child: Icon(
+                                      Icons.access_alarms_rounded,
+                                      color: Colors.red,
+                                      size: 16,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${randomNumber[1]}",
+                                    style: const TextStyle(
+                                      color: SSU_BLACK,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 1, 2),
+                                    child: Icon(
+                                      Icons.check,
+                                      size: 16,
+                                      color: SSU_BLACK,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${randomNumber[2]}",
+                                    style: const TextStyle(
+                                      color: SSU_BLACK,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_right, size: 30),
-                              color: SSU_BLUE,
-                              onPressed: () {
-                                calanderCont.monthUp();
-                                chgDate(calanderCont.year, calanderCont.month);
-                              },
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.arrow_left, size: 24),
+                                  color: SSU_BLACK,
+                                  onPressed: () {
+                                    makeRandomNumber();
+                                    calanderCont.monthDown();
+                                    chgDate(
+                                      calanderCont.year,
+                                      calanderCont.month,
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.arrow_right, size: 24),
+                                  color: SSU_BLACK,
+                                  onPressed: () {
+                                    makeRandomNumber();
+                                    calanderCont.monthUp();
+                                    chgDate(
+                                      calanderCont.year,
+                                      calanderCont.month,
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -160,10 +262,11 @@ class _CalanderScreenState extends State<CalanderScreen> {
                     ...List<Widget>.generate(
                       weekdays.length,
                       (index) => Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
                         width: itemWidth,
                         height: WeekHeight,
                         decoration: BoxDecoration(
-                          border: Border.all(color: BORDER_GRAY, width: 0.2),
+                          // border: Border.all(color: BORDER_GRAY, width: 0.2),
                           borderRadius: index == 0
                               ? const BorderRadius.only(
                                   topLeft: Radius.circular(10),
@@ -183,9 +286,9 @@ class _CalanderScreenState extends State<CalanderScreen> {
                                     ? RED
                                     : index == 6
                                         ? SSU_BLUE
-                                        : CALANDER_TEXT_GRAY,
+                                        : SSU_BLACK,
                                 fontSize: 10,
-                                fontWeight: FontWeight.bold), // 텍스트 스타일 정의
+                                fontWeight: FontWeight.w600), // 텍스트 스타일 정의
                           ),
                         ),
                       ),
@@ -202,59 +305,94 @@ class _CalanderScreenState extends State<CalanderScreen> {
                       ...List<Widget>.generate(
                         calanderCont.viewDays[row].length,
                         (col) => InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
                           // 달력 터치 이벤트
                           onTap: () {
                             onDayTap(calanderCont.year, calanderCont.month,
                                 calanderCont.viewDays[row][col]);
                           },
-                          child: Container(
-                            width: itemWidth,
-                            height: dayHeight,
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: BORDER_GRAY, width: 0.2),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                  child: Text(
-                                    "${calanderCont.viewDays[row][col] == 0 ? "" : calanderCont.viewDays[row][col]}",
-                                    style: TextStyle(
-                                        color: col == 0
-                                            ? RED
-                                            : col == 6
-                                                ? SSU_BLUE
-                                                : CALANDER_TEXT_GRAY,
-                                        fontSize: 12,
-                                        fontWeight:
-                                            FontWeight.bold), // 텍스트 스타일 정의
-                                  ),
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(2, 2, 2, 0),
+                                width: itemWidth,
+                                height: dayHeight,
+                                decoration: BoxDecoration(
+                                  color: calanderCont.viewDays[row][col] == 0
+                                      ? Colors.white
+                                      : _selectedDay ==
+                                              calanderCont.viewDays[row][col]
+                                          ? SSU_BLACK
+                                          : SSU_GRAY,
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                Container(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      ...calanderCont.retTagShortList(
-                                          calanderCont.viewDays[row][col],
-                                          itemWidth,
-                                          dayHeight * 1.4),
-                                      /*
-                                          BlueTag("공모전", itemWidth, dayHeight),
-                                          GreenTag("공모전이 왔어요 왔어요", itemWidth,
-                                              dayHeight),
-                                          RedTag("긴급일정", itemWidth, dayHeight),
-                                          */
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                      child: Text(
+                                        "${calanderCont.viewDays[row][col] == 0 ? "" : calanderCont.viewDays[row][col]}",
+                                        style: TextStyle(
+                                          color: col == 0
+                                              ? RED
+                                              : col == 6
+                                                  ? SSU_BLUE
+                                                  : _selectedDay ==
+                                                          calanderCont
+                                                                  .viewDays[row]
+                                                              [col]
+                                                      ? Colors.white
+                                                      : SSU_BLACK,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ), // 텍스트 스타일 정의
+                                      ),
+                                    ),
+                                    Container(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ...calanderCont.retTagShortList(
+                                              calanderCont.viewDays[row][col],
+                                              itemWidth,
+                                              dayHeight * 1.4),
+                                          /*
+                                              BlueTag("공모전", itemWidth, dayHeight),
+                                              GreenTag("공모전이 왔어요 왔어요", itemWidth,
+                                                  dayHeight),
+                                              RedTag("긴급일정", itemWidth, dayHeight),
+                                              */
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: itemWidth, height: 5),
+                              Container(
+                                width: itemWidth,
+                                height: 3,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: calanderCont.viewDays[row][col] == 0
+                                      ? Colors.white
+                                      : _selectedDay ==
+                                              calanderCont.viewDays[row][col]
+                                          ? SSU_BLACK
+                                          : Colors.white,
+                                ),
+                              ),
+                              SizedBox(width: itemWidth, height: 5),
+                            ],
                           ),
                         ),
                       )
@@ -265,7 +403,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 0, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(14, 0, 0, 0),
                       child: Text(
                         _selectedDay != 0
                             ? "${calanderCont.year}년 ${calanderCont.month}월 $_selectedDay일"
@@ -287,7 +425,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
                                 );
                               },
                               iconSize: 30,
-                              icon: const Icon(Icons.add, color: SSU_BLUE),
+                              icon: const Icon(Icons.add, color: SSU_BLACK),
                             ),
                           ),
                   ],
@@ -299,19 +437,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
                       itemCount: selectedTags
                           .length, // 리스트 아이템 수. 실제 데이터 개수에 맞춰 설정하세요.
                       itemBuilder: (context, index) {
-                        var tag = selectedTags[index];
-                        Color color;
-                        if (tag.tag == 1) {
-                          color = Colors.blue;
-                        } else if (tag.tag == 2) {
-                          color = Colors.yellow;
-                        } else if (tag.tag == 3) {
-                          color = Colors.green;
-                        } else if (tag.tag == 4) {
-                          color = Colors.black;
-                        } else {
-                          color = Colors.red;
-                        }
+                        final tag = selectedTags[index];
                         return Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 5), // 리스트 아이템 간의 간격
@@ -328,10 +454,10 @@ class _CalanderScreenState extends State<CalanderScreen> {
                           ),
                           child: ListTile(
                             // ListTile의 패딩
-                            leading: Icon(
+                            leading: const Icon(
                               size: 18,
                               Icons.event,
-                              color: color,
+                              color: SSU_BLACK,
                             ),
                             title: Text(
                               tag.title,

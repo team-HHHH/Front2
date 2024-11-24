@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:scheduler/ConfigJH.dart';
 import 'package:scheduler/Controllers/login_controller.dart';
 import 'package:scheduler/Controllers/token_controller.dart';
 import 'package:scheduler/Screens/register_screen.dart';
@@ -16,8 +17,10 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0), // 구분선의 두께
@@ -54,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "혁혁호형",
+                    "슈:케쥴러",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontSize: 20,
@@ -91,8 +94,8 @@ class LoginScreen extends StatelessWidget {
                           ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
+                        borderSide: const BorderSide(
+                          color: SSU_BLACK,
                           width: 2.0,
                         ), // 포커스 상태에서 테두리 색상
                       ),
@@ -126,8 +129,8 @@ class LoginScreen extends StatelessWidget {
                           ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
+                        borderSide: const BorderSide(
+                          color: SSU_BLACK,
                           width: 2.0,
                         ), // 포커스 상태에서 테두리 색상
                       ),
@@ -144,7 +147,7 @@ class LoginScreen extends StatelessWidget {
                     },
                     style: TextButton.styleFrom(
                       splashFactory: NoSplash.splashFactory,
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: SSU_BLACK,
                     ),
                     child: const Text(
                       "로그인",
