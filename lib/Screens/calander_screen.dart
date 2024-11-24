@@ -126,7 +126,7 @@ class _CalanderScreenState extends State<CalanderScreen> {
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
               child: IconButton(
                 onPressed: () {
-                  calanderCont.summerizePosterUrgen(context);
+                  //calanderCont.summerizePosterGara(context);
                   Get.to(() => const CameraScreen(),
                       transition: Transition.cupertino);
                 },

@@ -17,7 +17,10 @@ import 'package:http/http.dart' as http;
 import 'package:scheduler/Controllers/token_controller.dart';
 import 'package:scheduler/Models/tag.dart';
 import 'package:scheduler/Screens/calander_add_screen.dart';
+import 'package:scheduler/Screens/calander_detail_screen.dart';
 import 'package:scheduler/Screens/calander_screen.dart';
+
+var garaIdx = 0;
 
 class CalanderController extends GetxController {
   final TokenController tokenController = Get.put(TokenController());
@@ -118,6 +121,58 @@ class CalanderController extends GetxController {
     fetchDataByDate(newTag.timeDetail.year, newTag.timeDetail.month);
   }
 
+  //포스터 업데이트를 위한 중간 Tag
+  Future<TagNode> getSid(
+      int year, int month, int day, String title, String content) async {
+    DateTime dateTime = DateTime(year, month, day);
+    String stringTime = dateTime.toIso8601String();
+
+    final url = Uri.http(SERVER_DOMAIN, "/calenders");
+    final response = await ssuPost(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': tokenController.accessToken.toString(),
+      },
+      body: jsonEncode(
+        {
+          "dateInfo": {"year": year, "month": month, "day": day},
+          "title": title,
+          "content": content,
+          "startDay": stringTime,
+          "endDay": stringTime
+        },
+      ),
+    );
+
+    TagNode empty = TagNode(
+        title: "", content: "", timeDetail: DateTime(2000), tag: -1, sid: -1);
+    if (response.statusCode != 200) return empty;
+
+    final responseData = ApiHelper(response.body);
+    final resultCode = responseData.getResultCode();
+    if (resultCode != 200) return empty;
+    int sid = responseData.getBody();
+
+    String key = '$year-$month-$day';
+    print(key);
+    TagNode adder = TagNode(
+        title: title,
+        content: content,
+        timeDetail: dateTime,
+        tag: (sid % 5) + 1,
+        sid: sid);
+    // 리스트가 비어 있으면 해당 키 삭제
+    if (tagMap.containsKey(key)) {
+      tagMap[key]!.add(adder);
+    } else {
+      tagMap[key] = [adder];
+    }
+
+    print("생성 완료");
+    return adder;
+  }
+
   ///
   ///  @24-11-20 Junhyeong Update Note: 무지성으로 날짜 url 호출 시 Tag 검색에 중복으로 쌓이는 문제점 발생
   ///  _--> 검색 시에는 sid와 urlMode를 삽입해서 검색할 것.
@@ -202,6 +257,29 @@ class CalanderController extends GetxController {
   // void updateTag(int year, int month, int day, int sid) {
   //   String key = '$year-$month-$day';
   // }
+
+  void summerizePosterGara(BuildContext context) async {
+    garaIdx = garaIdx % 2;
+    sleep(const Duration(seconds: 5));
+    List<String> title = [
+      "ChunMan Art for Young 공모전",
+      "5th POSTECH SF AWARD 공모전"
+    ];
+    List<String> content = [
+      "대한민국 국적의 대학생은 모두 참여가능한 디자인 공모전입니다.",
+      "전국 이공계 학부생이 SF 단편소설을 겨루는 공모전입니다"
+    ];
+    List<DateTime> endDate = [DateTime(2024, 12, 30), DateTime(2025, 1, 12)];
+
+    print(
+        "${title[garaIdx]}, ${content[garaIdx]}, time=${endDate[garaIdx].toString()}");
+
+    TagNode newTag = await getSid(endDate[garaIdx].year, endDate[garaIdx].month,
+        endDate[garaIdx].day, title[garaIdx], content[garaIdx]);
+
+    garaIdx += 1;
+    Get.to(CalanderDetailScreen(tagNode: newTag));
+  }
 
   void summerizePosterUrgen(BuildContext context) async {
     final url = Uri.http(SERVER_DOMAIN, "/posters/upload");
