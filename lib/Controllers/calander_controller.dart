@@ -20,6 +20,8 @@ import 'package:scheduler/Screens/calander_add_screen.dart';
 import 'package:scheduler/Screens/calander_detail_screen.dart';
 import 'package:scheduler/Screens/calander_screen.dart';
 
+var garaIdx = 0;
+
 class CalanderController extends GetxController {
   final TokenController tokenController = Get.put(TokenController());
 
@@ -256,15 +258,18 @@ class CalanderController extends GetxController {
   //   String key = '$year-$month-$day';
   // }
 
-  var garaIdx = 0;
   void summerizePosterGara(BuildContext context) async {
     garaIdx = garaIdx % 2;
-    List<String> title = ["신영문화재단 건축문화상 디자인 공모전", "청소년 아이디어 공모전"];
-    List<String> content = [
-      "신영문화재단에서 주최하는 건축문화상 디자인 공모전입니다. 창의성과 아이디어를 통해 독창적인 디자인을 개발해보세요.",
-      "우리 동네 '지구온도' 15도 상승 제한을 이야기하고 있습니다. '15도'는 저탄소 실천운동의 상징으로 기후위기를 막기 위한 중요한 의미로 사용합니다. 공모주제는 기후위기 극복을 위해 생활 속에서 쉽게 실천할 수 방법입니다."
+    sleep(const Duration(seconds: 5));
+    List<String> title = [
+      "ChunMan Art for Young 공모전",
+      "5th POSTECH SF AWARD 공모전"
     ];
-    List<DateTime> endDate = [DateTime(2023, 4, 20), DateTime(2021, 11, 25)];
+    List<String> content = [
+      "대한민국 국적의 대학생은 모두 참여가능한 디자인 공모전입니다.",
+      "전국 이공계 학부생이 SF 단편소설을 겨루는 공모전입니다"
+    ];
+    List<DateTime> endDate = [DateTime(2024, 12, 30), DateTime(2025, 1, 12)];
 
     print(
         "${title[garaIdx]}, ${content[garaIdx]}, time=${endDate[garaIdx].toString()}");
@@ -272,8 +277,8 @@ class CalanderController extends GetxController {
     TagNode newTag = await getSid(endDate[garaIdx].year, endDate[garaIdx].month,
         endDate[garaIdx].day, title[garaIdx], content[garaIdx]);
 
-    Get.to(CalanderDetailScreen(tagNode: newTag));
     garaIdx += 1;
+    Get.to(CalanderDetailScreen(tagNode: newTag));
   }
 
   void summerizePosterUrgen(BuildContext context) async {
